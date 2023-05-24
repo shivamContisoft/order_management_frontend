@@ -1,0 +1,569 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Customer</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddCustomerModal(createcustomer)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Customer
+                        </button>
+                    </div>
+                    <div class="row" *ngIf="userAccountType!=2 ">
+                    <div class="col-md-3" style="margin-left: 20px">
+                        <label for="fileSelector">Upload XLSX File</label>
+                        <input name="fileSelector" accept=".xlsx" type="file" (change)="convertFile($event,errorModal)" />
+                    </div>
+                </div>
+                </div>
+                <div class="row" *ngIf="userAccountType!=2 ">
+                <div class="card-body">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="customerArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewcustomer)" (onActionPerformed)="editElement($event, editcustomer)" (onActionPerformed)="deleteElement($event, deletecustomer)">
+                    </easy-grid>
+                    <!-- Starts Table -->
+                    <!-- <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Contact Person Name</th>
+                                    <th sortable="office">Contact Person E-mail</th>
+                                    <th sortable="age">Contact Person Contact</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Customers; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.customerName}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonName1}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonEmail1}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonContact1}}
+                                    </td>
+                                    <td>
+                                       
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewCustomerModal(table.id, viewcustomer)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                        
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditCustomerModal(table.id, editcustomer)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                       
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteCustomerModal(deletecustomer)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                    <!-- End table -->
+                </div>
+            </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Customer -->
+<ng-template #createcustomer role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Customer <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="customerFormGroup">
+            <hr class="hr-line">
+            <h5>General</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="entity" id="entity" required>
+                        <option value="default">Select Entity</option>
+                        <option *ngFor="let item of Entitys" value="{{item.id}}">{{item.entityName}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="customerName">Company Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="customerName" class="form-control rounded_" id="customerName" placeholder="Customer Name"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched) }" required>
+                    <div *ngIf="getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched)" class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.customerName.errors" class="error">
+                            Customer Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="address">Address</label>
+                    <textarea type="text" style="height: 20px;" class="form-control" id="address" formControlName="address" placeholder="Address"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="city">City <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="city" class="form-control rounded_" id="city" placeholder="city"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.city.errors && ( getCustomerFormControls.city.dirty ||  getCustomerFormControls.city.touched) }" required>
+                        
+                    <div *ngIf=" getCustomerFormControls.city.errors && ( getCustomerFormControls.city.dirty ||  getCustomerFormControls.city.touched)" class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.city.errors" class="error">
+                            city is required
+                        </div>
+                    </div>
+                </div>
+
+              
+                <div class="col-sm-4">
+                    <label for="state">State <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="state" class="form-control rounded_" id="state" placeholder="state"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.state.errors && ( getCustomerFormControls.state.dirty ||  getCustomerFormControls.state.touched) }" #statesList required>
+                        
+                    <div *ngIf=" getCustomerFormControls.state.errors && ( getCustomerFormControls.state.dirty ||  getCustomerFormControls.state.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.state.errors" class="error">
+                            State is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="country">Country <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="country" class="form-control rounded_" id="country" placeholder="country"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.country.errors && ( getCustomerFormControls.country.dirty ||  getCustomerFormControls.country.touched) }" #countriesList required>
+                        
+                    <div *ngIf=" getCustomerFormControls.country.errors && ( getCustomerFormControls.country.dirty ||  getCustomerFormControls.country.touched)" class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.country.errors" class="error">
+                            Country is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Pincode"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="PaymentTerm">Payment Term</label>
+                    <input type="text" class="form-control" id="PaymentTerm" formControlName="PaymentTerm" placeholder="Payment Term"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="accountManager">Account Manager</label>
+                    <select name="accountManager" id="accountManager" class="form-control" formControlName="accountManager">
+                        <option *ngFor="let accountManager of AmArray; let i = index"  value="{{accountManager.id}}">{{accountManager.name}}</option>
+                    </select>
+                   
+                </div>
+                
+            </div>  
+            <hr class="hr-line">
+            <h5 class="heading-top">Contact Person</h5>
+            <hr class="hr-line">
+            <h6 class="sub-heading-top">1) Primary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName1">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName1" formControlName="contactPersonName1" placeholder="Contact Person Name"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonName1.errors && (getCustomerFormControls.contactPersonName1.dirty || getCustomerFormControls.contactPersonName1.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonName1.errors && (getCustomerFormControls.contactPersonName1.dirty || getCustomerFormControls.contactPersonName1.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonName1.errors" class="error">
+                           Please enter first & last Name
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact1">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact1" formControlName="contactPersonContact1" placeholder="Contact Person Contact"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonContact1.errors && (getCustomerFormControls.contactPersonContact1.dirty || getCustomerFormControls.contactPersonContact1.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonContact1.errors && (getCustomerFormControls.contactPersonContact1.dirty || getCustomerFormControls.contactPersonContact1.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonContact1.errors" class="error">
+                           Please enter valid Contact no
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail1">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail1" formControlName="contactPersonEmail1" placeholder="Contact Person Email"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonEmail1.errors && (getCustomerFormControls.contactPersonEmail1.dirty || getCustomerFormControls.contactPersonEmail1.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonEmail1.errors && (getCustomerFormControls.contactPersonEmail1.dirty || getCustomerFormControls.contactPersonEmail1.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonEmail1.errors" class="error">
+                           Please enter valid email
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <h6 class="sub-heading-top">2) Secondary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName2">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName2" formControlName="contactPersonName2" placeholder="Contact Person Name"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonName2.errors && (getCustomerFormControls.contactPersonName2.dirty || getCustomerFormControls.contactPersonName2.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonName2.errors && (getCustomerFormControls.contactPersonName2.dirty || getCustomerFormControls.contactPersonName2.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonName2.errors" class="error">
+                            Please enter first & last Name
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact2">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact2" formControlName="contactPersonContact2" placeholder="Contact Person Contact"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonContact2.errors && (getCustomerFormControls.contactPersonContact2.dirty || getCustomerFormControls.contactPersonContact2.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonContact2.errors && (getCustomerFormControls.contactPersonContact2.dirty || getCustomerFormControls.contactPersonContact2.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonContact2.errors" class="error">
+                           Please enter valid Contact no
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail2">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail" formControlName="contactPersonEmail2" placeholder="Contact Person Email"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.contactPersonEmail2.errors && (getCustomerFormControls.contactPersonEmail2.dirty || getCustomerFormControls.contactPersonEmail2.touched) }"/>
+                    <div *ngIf="getCustomerFormControls.contactPersonEmail2.errors && (getCustomerFormControls.contactPersonEmail2.dirty || getCustomerFormControls.contactPersonEmail2.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.contactPersonEmail2.errors" class="error">
+                           Please enter valid email
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createcustomer);" [disabled]="customerFormGroup.invalid">Save Customer</button>
+    </div> 
+</ng-template>
+<!-- End Add Customer -->
+
+<!-- Start Edit Customer -->
+<ng-template #editcustomer role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit Customer <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="customerFormGroup">
+            <hr class="hr-line">
+            <h5>General</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="entity" id="entity" required>
+                        <option value="default">Select Entity</option>
+                        <option *ngFor="let item of Entitys" value="{{item.id}}">{{item.entityName}}</option>
+                    </select>
+                </div>
+                <div class="col-sm-4">
+                    <label for="customerName">Customer Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="customerName" class="form-control rounded_" id="customerName" placeholder="Customer Name"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched) }" required>
+                    <div *ngIf="getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched)" class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.customerName.errors" class="error">
+                            Customer Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="address">Address</label>
+                    <textarea type="text" style="height: 20px;" class="form-control" id="address" formControlName="address" placeholder="Address"></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="city">City <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="city" class="form-control rounded_" id="city" placeholder="city"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.city.errors && ( getCustomerFormControls.city.dirty ||  getCustomerFormControls.city.touched) }" required>
+                        
+                    <div *ngIf=" getCustomerFormControls.city.errors && ( getCustomerFormControls.city.dirty ||  getCustomerFormControls.city.touched)" class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.city.errors" class="error">
+                            city is required
+                        </div>
+                    </div>
+                </div>
+
+              
+                <div class="col-sm-4">
+                    <label for="state">State <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="state" class="form-control rounded_" id="state" placeholder="state"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.state.errors && ( getCustomerFormControls.state.dirty ||  getCustomerFormControls.state.touched) }" #statesList required>
+                        
+                    <div *ngIf=" getCustomerFormControls.state.errors && ( getCustomerFormControls.state.dirty ||  getCustomerFormControls.state.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.state.errors" class="error">
+                            State is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="country">Country <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="country" class="form-control rounded_" id="country" placeholder="country"
+                        [ngClass]="{ 'is-invalid':  getCustomerFormControls.country.errors && ( getCustomerFormControls.country.dirty ||  getCustomerFormControls.country.touched) }" #countriesList required>
+                        
+                    <div *ngIf=" getCustomerFormControls.country.errors && ( getCustomerFormControls.country.dirty ||  getCustomerFormControls.country.touched)" class="invalid-feedback">
+                        <div *ngIf=" getCustomerFormControls.country.errors" class="error">
+                            Country is required
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Pincode"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="PaymentTerm">Payment Term</label>
+                    <input type="text" class="form-control" id="PaymentTerm" formControlName="PaymentTerm" placeholder="Payment Term" />
+                </div>
+
+                <div class="col-sm-4">
+                    <label for="accountManager">Account Manager</label>
+                    <select name="accountManager" id="accountManager" class="form-control" formControlName="accountManager">
+                        <option *ngFor="let accountManager of AmArray; let i = index"  value="{{accountManager.id}}">{{accountManager.name}}</option>
+                    </select>
+                   
+                </div>
+                
+            </div>
+            <hr class="hr-line">
+            <h5 class="heading-top">Contact Person</h5>
+            <hr class="hr-line">
+            <h6 class="sub-heading-top">1) Primary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName1">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName1" formControlName="contactPersonName1" placeholder="Contact Person Name"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact1">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact1" formControlName="contactPersonContact1" placeholder="Contact Person Contact"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail1">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail1" formControlName="contactPersonEmail1" placeholder="Contact Person Email"/>
+                </div>
+            </div>
+            <h6 class="sub-heading-top">2) Secondary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName2">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName2" formControlName="contactPersonName2" placeholder="Contact Person Name"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact2">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact2" formControlName="contactPersonContact2" placeholder="Contact Person Contact"/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail2">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail" formControlName="contactPersonEmail2" placeholder="Contact Person Email"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateCustomer(createcustomer);">Update Customer</button>
+    </div> 
+</ng-template>
+<!-- End Edit Customer -->
+
+<!-- Start View Customer -->
+<ng-template #viewcustomer role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Customer <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="customerFormGroup">
+            <hr class="hr-line">
+            <h5>General</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity</label>
+                    <input type="text" class="form-control" id="entity" formControlName="entity" placeholder="Entity" disabled required/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="customerName">Customer Name </label>
+                    <input type="text" formControlName="customerName" class="form-control rounded_" id="customerName" placeholder="Customer Name"
+                    [ngClass]="{ 'is-invalid': getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched) }" disabled required>
+                    <div *ngIf="getCustomerFormControls.customerName.errors && (getCustomerFormControls.customerName.dirty || getCustomerFormControls.customerName.touched)" class="invalid-feedback">
+                        <div *ngIf="getCustomerFormControls.customerName.errors" class="error">
+                            Customer Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="address">Address</label>
+                    <textarea type="text" style="height: 20px;" class="form-control" id="address" formControlName="address" placeholder="Address" disabled></textarea>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="city">City</label>
+                    <input type="text" class="form-control" id="city" formControlName="city" placeholder="city" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="state">State</label>
+                    <input type="text" class="form-control" id="state" formControlName="state" placeholder="state" disabled/>
+                </div>
+               
+                <div class="col-sm-4">
+                    <label for="country">Country</label>
+                    <input type="text" class="form-control" id="country" formControlName="country" placeholder="Country" disabled/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="pincode">Pincode</label>
+                    <input type="text" class="form-control" id="pincode" formControlName="pincode" placeholder="Pincode" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="PaymentTerm">Payment Term</label>
+                    <input type="text" class="form-control" id="PaymentTerm" formControlName="PaymentTerm" placeholder="Payment Term" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="accountManager">Account Manager</label>
+                    <select name="accountManager" id="accountManager" class="form-control" formControlName="accountManager">
+                        <option *ngFor="let accountManager of AmArray; let i = index"  value="{{accountManager.id}}">{{accountManager.name}}</option>
+                    </select>
+                   
+                </div>
+            </div>
+            <hr class="hr-line">
+            <h5 class="heading-top">Contact Person</h5>
+            <hr class="hr-line">
+            <h6 class="sub-heading-top">1) Primary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName1">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName1" formControlName="contactPersonName1" placeholder="Contact Person Name" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact1">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact1" formControlName="contactPersonContact1" placeholder="Contact Person Contact" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail1">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail1" formControlName="contactPersonEmail1" placeholder="Contact Person Email" disabled/>
+                </div>
+            </div>
+            <h6 class="sub-heading-top">2) Secondary :</h6>
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="contactPersonName2">Contact Person Name</label>
+                    <input type="text" class="form-control" id="contactPersonName2" formControlName="contactPersonName2" placeholder="Contact Person Name" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonContact2">Contact Person Contact</label>
+                    <input type="text" class="form-control" id="contactPersonContact2" formControlName="contactPersonContact2" placeholder="Contact Person Contact" disabled/>
+                </div>
+                <div class="col-sm-4">
+                    <label for="contactPersonEmail2">Contact Person Email</label>
+                    <input type="text" class="form-control" id="contactPersonEmail" formControlName="contactPersonEmail2" placeholder="Contact Person Email" disabled/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div> 
+</ng-template>
+<!-- End View Customer -->
+
+<!-- Start Delete Customer -->
+<ng-template #deletecustomer role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Customer</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this customer!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteCustomer(deletecustomer)">Delete Customer</button>
+    </div>
+</ng-template>
+<!-- End Delete Customer -->
+
+
+<ng-template #errorModal role="document" let-modal>
+    <div class="modal-header">
+        <h3>Error Details</h3>
+        <!-- <button type="button" class="btn btn-warning btn-with-icon"  style="float: right;">
+            <i class="fa fa-download fa-fw"></i></button> -->
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive" style="max-height:400px;padding-left: 20px;">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Reason</th>
+                        <th>Entity</th>
+                        <th>Customer Name</th>
+                        <th>Address</th>
+                        <th>Country </th>
+                        <th>State </th>
+                        <th>City</th>
+                        <th>Pincode</th>
+                        <th>PaymentTerm</th>
+                        <th>Contact Person Name</th>
+                        <th>Contact Person contact</th>
+                        <th>Contact Person email</th>
+                        <th>Contact Person Name</th>
+                        <th>Contact Person contact</th>
+                        <th>Contact Person email</th>
+                       
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let table of dataWithErrors let index = index">
+                        <td>{{table.reason}}</td>
+                        <td>{{table.entity}}
+                        <td>{{table.customerName}}</td>
+                        <td>{{table.address}}</td>
+                        <td>{{table.country}}</td>
+                        <td>{{table.state}}</td>
+                        <td>{{table.pincode}}</td>
+                        <td>{{table.pincode}}</td>
+                        <td>{{table.PaymentTerm}}</td>
+                        <td>{{table.contactPersonName1}}</td>
+                        <td>{{table.contactPersonContact1}}</td>
+                        <td>{{table.contactPersonEmail1}}</td>
+                        <td>{{table.contactPersonName2}}</td>
+                        <td>{{table.contactPersonContact2}}</td>
+                        <td>{{table.contactPersonEmail2}}</td>
+                       
+                        
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>

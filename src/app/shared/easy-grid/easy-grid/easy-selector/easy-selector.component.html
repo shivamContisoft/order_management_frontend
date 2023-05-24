@@ -1,0 +1,66 @@
+<div class="dropdown">
+    <button class="btn btn-block text-left dropdown-toggle" type="button" data-toggle="dropdown" aria-haspopup="true"
+        aria-expanded="false" data-display="static" [title]="selected"
+        [ngClass]="{ 'border border-danger': showError }">
+        <span>
+            {{selected ? selected : (placeholder ? placeholder : 'Select')}}
+        </span> 
+    </button>
+    <div class="dropdown-menu">
+
+        <!-- search -->
+        <div *ngIf="showSearch" class="dropdown-item dropdown-item-search" onclick="event.stopPropagation();">
+            <div class="input-group">
+                <input type="text" class="form-control" placeholder="Search" [(ngModel)]="search">
+                <div class="input-group-append">
+                    <span class="input-group-text h-100">
+                        <img src="/assets/icons/search.svg" alt="" title="Bootstrap">
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- checkboxes -->
+        <div class="dropdown-item-checkboxes">
+
+            <!-- all -->
+            <div class="dropdown-item" onclick="event.stopPropagation();" *ngIf="showAll && all.visible"
+                [ngClass]="{ 'checked': all.isEnabled }">
+                <!-- checkbox -->
+                <div class="custom-control custom-checkbox">
+                    <input type="checkbox" class="custom-control-input" [id]="'chkItem' + all.name"
+                        (change)='onChange($event, all)' [checked]="all.isEnabled">
+                    <label class="custom-control-label" [for]="'chkItem' + all.name">
+                        <span class="pl-2" [title]="all.value">{{all.value}}</span>
+                    </label>
+                </div>
+            </div>
+
+            <ng-container *ngFor="let item of filtered; let i = index;">
+                <div class="dropdown-item" onclick="event.stopPropagation();" *ngIf="item.visible"
+                    [ngClass]="{ 'checked': item.isEnabled }">
+                    <!-- checkbox -->
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" [id]="'chkItem' + item.name"
+                            (change)='onChange($event, item)' [checked]="item.isEnabled">
+                        <label class="custom-control-label" [for]="'chkItem' + item.name">
+                            <span class="pl-2" [title]="item.value">{{item.value}}</span>
+                        </label>
+                    </div>
+                </div>
+            </ng-container>
+        </div>
+
+        <!-- not found -->
+        <div class="dropdown-item" *ngIf="isEmpty">
+            No Item Found
+        </div>
+
+        <!-- status -->
+        <div *ngIf="showStatus" class="dropdown-count text-dark">
+            <span><b>Total:</b> {{items.length}}</span>
+            <span><b>Enabled:</b> {{isEnabled}}</span>
+            <span *ngIf="search"><b>Search Count:</b> {{filtered.length}}</span>
+        </div>
+    </div>
+</div>

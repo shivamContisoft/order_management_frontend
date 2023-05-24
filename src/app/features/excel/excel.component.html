@@ -1,0 +1,86 @@
+
+<!-- <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+(click)="downloadXlstudentList()"><i class="bi bi-download"></i> Download</button> -->
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <table class="table table-striped" #orderExcelSheet id="table">
+                    <thead>
+                        <tr>
+                            <th>Sr.No.</th>
+                            <th>OrderId</th>
+                            <th>Order Code</th>
+                            <th>Order Date</th>
+                            <th>Entity Name</th>
+                            <th>Customer Name</th>
+                            <th>Po No</th>
+                            <th>Po Date</th>
+                            <th>Oem</th>
+                            <th>Oem Dealer Id</th>
+                            <th>Bdm</th>
+                            <th>Product Description</th>
+                            <th>Product Type</th>
+                            <th>Duration</th>
+                            <th>Po Value</th>
+                            <th>Company Payment Terms</th>
+                            <th>Order Type</th>
+                            <th>Bdm Percentage</th>
+                            <!-- <th>Vendor Name</th>
+                            <th>Vendor Payment Value</th>
+                            <th>Vendor Po Value</th>
+                            <th>Vendor Value</th> -->
+                            <th>Status</th>
+                            <th>External Cost</th>
+                            <th>BR</th>
+                            <th>GP</th>
+                            <th>GPPercent</th>
+                            <th>PM</th>
+                            <th>POGM</th>
+                            <th>POGMPercent</th>
+
+
+                        </tr>
+                    </thead>
+                    <tbody>
+
+                        <tr *ngFor="let table of NewData; let i=index">
+                            
+                            <td>{{i+1}}</td>
+                            <td>{{table.id}}</td>
+                            <td>{{table.orderCode}}</td>
+                            <td>{{table.orderdate}}</td>
+                            <td>{{table.entityName}}</td>
+                            <td>{{table.customername}}</td>
+                            <td>{{table.pono}}</td>
+                            <td>{{table.podate}}</td>
+                            <td>{{table.oem}}</td>
+                            <td>{{table.oemDealerId}}</td>
+                            <td>{{table.bdm}}</td>
+                            <td>{{table.productDescription}}</td>
+                            <td>{{table.productType}}</td>
+                            <td>{{table.duration}}</td>
+                            <td>{{table.povalue}}</td>
+                            <td>{{table.companyPaymentTerms}}</td>
+                            <td>{{table.orderType}}</td>
+                            <td>{{table.bdmPercentage}}</td>
+                            <!-- <td>{{table.vendorName}}</td>
+                            <td>{{table.vendorPaymentValue}}</td>
+                            <td>{{table.vendorPoValue}}</td>
+                            <td>{{table.vendorValue}}</td> -->
+                            <td>{{table.Status}}</td>
+                            <td>{{table.externalCost}}</td>
+                            <td>{{table.BR}}</td>
+                            <td>{{table.GP}}</td>
+                            <td>{{table.GPPercent}}</td>
+                            <td>{{table.PM}}</td>
+                            <td>{{table.POGM}}</td>
+                            <td>{{table.POGMPercent}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,125 @@
+<div style="margin-top: 5px;margin-bottom: 3px;">
+    <ng-container *ngIf="isSearchEnabled">
+
+        <select class="form-select select-cols inline" (change)="search(searchBox.value, searchBy.value);"
+            aria-label="Default select example" #searchBy>
+            <option value="1$2#3&" selected>Search In All</option>
+            <option *ngFor="let colName of (dataColumns | filterable)" [value]="colName.name">{{colName.value}}
+            </option>
+        </select>
+
+        <input class="inline" type="text" id="searchBox" name="searchBox" placeholder="Search Here"
+            [(ngModel)]="searchQuery"
+             #searchBox />
+             <!-- (keyup.enter)="search(searchBox.value, searchBy.value, true);" -->
+    </ng-container>
+
+    <button *ngIf='isExportEnabled' type="button" class="btn btn-primary download-icon inline"
+        [ngStyle]="{'background-color': downloadBtnBgColor, 'color': downloadBtnTextColor}"
+        (click)="downloadExcel()"><svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="white"
+            class="bi bi-file-earmark-spreadsheet " viewBox="0 0 16 16">
+            <path
+                d="M14 14V4.5L9.5 0H4a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h8a2 2 0  0 0 2-2zM9.5 3A1.5 1.5 0 0 0 11 4.5h2V9H3V2a1 1 0 0 1 1-1h5.5v2zM3 12v-2h2v2H3zm0 1h2v2H4a1 1 0 0 1-1-1v-1zm3 2v-2h3v2H6zm4 0v-2h3v1a1 1 0 0 1-1 1h-2zm3-3h-3v-2h3v2zm-7 0v-2h3v2H6z" />
+        </svg> Download</button>
+
+    <select *ngIf="isActionsEnabled" class="form-select select-actions inline" aria-label="Default select example"
+        (change)="onActionSelected(actions.value);" #actions>
+        <option value="#all" selected>Select An Action</option>
+        <ng-container *ngFor="let action of actionsArray">
+            <option [value]="action.name" data-icon="bi bi-alarm"
+                [disabled]="((!action.multiple && selectedRowIds.length > 1) || (selectedRowIds.length == 0)) && !action.noSelection">
+
+                {{action.value}}</option>
+        </ng-container>
+    </select>
+
+    <div class="select-columns inline" *ngIf="isColumnSelectionEnabled">
+        <easy-selector [items]="dataColumns" [showSearch]="showSearch" [showStatus]="showStatus" [showError]="showError"
+            (itemChange)="onColumnEnableDisable($event)">
+        </easy-selector>
+    </div>
+</div>
+<div class="my-custom-scrollbar table-responsive">
+    <table>
+        <thead>
+            <tr>
+                <!-- [ngStyle]="{'background-color': headerBgColor, 'color': headerTextColor} -->
+                <th *ngIf="srNoEnable" >S.No
+                </th>
+                <th *ngFor="let col of (dataColumns | columnFilter); let index = index;"
+                    >
+                    {{col.value}}
+                    <ng-container *ngIf="col?.sortable && (sortOrder == 2)"><svg (click)="sort(index);"
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-sort-down" viewBox="0 0 16 16">
+                            <path
+                                d="M3.5 2.5a.5.5 0 0 0-1 0v8.793l-1.146-1.147a.5.5 0 0 0-.708.708l2 1.999.007.007a.497.497 0 0 0 .7-.006l2-2a.5.5 0 0 0-.707-.708L3.5 11.293V2.5zm3.5 1a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                        </svg></ng-container>
+                    <ng-container *ngIf="col?.sortable && (sortOrder == 1)"><svg (click)="sort(index);"
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-sort-up" viewBox="0 0 16 16">
+                            <path
+                                d="M3.5 12.5a.5.5 0 0 1-1 0V3.707L1.354 4.854a.5.5 0 1 1-.708-.708l2-1.999.007-.007a.498.498 0 0 1 .7.006l2 2a.5.5 0 1 1-.707.708L3.5 3.707V12.5zm3.5-9a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zM7.5 6a.5.5 0 0 0 0 1h5a.5.5 0 0 0 0-1h-5zm0 3a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zm0 3a.5.5 0 0 0 0 1h1a.5.5 0 0 0 0-1h-1z" />
+                        </svg></ng-container>
+                    <ng-container *ngIf="col?.sortable && (sortOrder == 0)"><svg (click)="sort(index);"
+                            xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor"
+                            class="bi bi-filter-left" viewBox="0 0 16 16">
+                            <path
+                                d="M2 10.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h7a.5.5 0 0 1 0 1h-7a.5.5 0 0 1-.5-.5zm0-3a.5.5 0 0 1 .5-.5h11a.5.5 0 0 1 0 1h-11a.5.5 0 0 1-.5-.5z" />
+                        </svg></ng-container>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let row of filteredArray; let i = index">
+                <td *ngIf="srNoEnable"
+                    [ngStyle]="{'text-align': 'center', 'background-color': isSelected(row[primaryKey], i) ? selectedItemBgColor ? selectedItemBgColor : '#008080' : '', 'color': isSelected(row[primaryKey], i) ? selectedItemBgColor ? selectedItemBgColor : '#fff' : ''}">
+                    {{i+1}}</td>
+                <td *ngFor="let colName of(dataColumns | columnFilter); trackBy: trackDataByPrimariKey"
+                    [ngStyle]="{'text-align': colName.textAlign ? colName.textAlign : '', 'background-color': isSelected(row[primaryKey], i) ? selectedItemBgColor ? selectedItemBgColor : '#008080' : '', 'color': isSelected(row[primaryKey], i) ? selectedItemBgColor ? selectedItemBgColor : '#fff' : ''}"
+                    (click)="selectedUnselectRow(row[primaryKey], i)">
+                    <div *ngIf="colName.isDate" [innerHtml]="row[colName.name] | dateFilter: colName"></div>
+                    <div *ngIf="!colName.isDate" [innerHtml]="row[colName.name]"></div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Pagination Part Goes Here -->
+<div class="row">
+    <ng-container *ngIf="ispaginationEnabled">
+    <div class="col">
+        <caption class="inline">Total Records - {{count}}</caption>
+    </div>
+    <div class="col">
+        <nav aria-label="Page navigation example" class="inline">
+            <ul class="pagination">
+                <li class="page-item" *ngIf="isFirst"><a class="page-link" (click)="onFirst();">First</a></li>
+                <li class="page-item"><a class="page-link" (click)="onPrevious();">Previous</a></li>
+                <li class="page-item">
+                    <select class="page-link select-nav" [(ngModel)]="itemsPerPage"
+                        (ngModelChange)="onPageSizeChange(pageSize.value)" #pageSize>
+                        <option [disabled]="true">Items Per Page</option>
+                        <option value="5">5</option>
+                        <option value="10">10</option>
+                        <option value="25">25</option>
+                        <option value="50">50</option>
+                        <option value="100">100</option>
+                    </select>
+                </li>
+                <li class="page-item">
+                    <select class="page-link select-nav" [(ngModel)]="currentPage"
+                        (ngModelChange)="onPageChange(pages.value)" #pages>
+                        <option [disabled]="true">Go To Page</option>
+                        <option *ngFor="let page of totalPagesArray;" value="{{page}}">{{page}}</option>
+                    </select>
+                </li>
+                <li class="page-item"><a class="page-link" (click)="onNext();">Next</a></li>
+                <li class="page-item" *ngIf="isLast"><a class="page-link" (click)="onLast();">Last</a></li>
+                <!-- <li class="page-item"><a class="page-link">Total - {{tempDataArray.length}}</a></li> -->
+            </ul>
+        </nav>
+    </div>
+    </ng-container>
+</div>

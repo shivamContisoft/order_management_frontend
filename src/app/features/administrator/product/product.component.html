@@ -1,0 +1,151 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Product</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddProductModal(createproduct)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Product
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="productArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewproduct)" (onActionPerformed)="editElement($event, editproduct)" (onActionPerformed)="deleteElement($event, deleteproduct)">
+                    </easy-grid>
+
+
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Product -->
+<ng-template #createproduct role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Product <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="productFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="productName">Product Type <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="productName" class="form-control rounded_" id="productName"
+                        placeholder="Product Name"
+                        [ngClass]="{ 'is-invalid': getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched) }"
+                        required>
+                    <div *ngIf="getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getProductFormControls.productName.errors" class="error">
+                            Product Type is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createproduct)" [disabled]="productFormGroup.invalid">Save Product</button>
+    </div>
+</ng-template>
+<!-- End Add Product -->
+
+<!-- Start Edit Product -->
+<ng-template #editproduct role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit Product   <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="productFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="productName">Product Type <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="productName" class="form-control rounded_" id="productName"
+                        placeholder="Product Name"
+                        [ngClass]="{ 'is-invalid': getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched) }"
+                        required>
+                    <div *ngIf="getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getProductFormControls.productName.errors" class="error">
+                            Product Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateProduct(editproduct)">Update Product</button>
+    </div>
+</ng-template>
+<!-- End Edit Product -->
+
+<!-- Start View Product -->
+<ng-template #viewproduct role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Product</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="productFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="productName">Product Type </label>
+                    <input type="text" formControlName="productName" class="form-control rounded_" id="productName"
+                        placeholder="Product Name" [ngClass]="{ 'is-invalid': getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched) }" disabled required>
+                    <div *ngIf="getProductFormControls.productName.errors && (getProductFormControls.productName.dirty || getProductFormControls.productName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getProductFormControls.productName.errors" class="error">
+                            Product Type is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description" disabled/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- End View Product -->
+
+<!-- Start Delete Product -->
+<ng-template #deleteproduct role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Product</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this product!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteProduct(deleteproduct)">Delete Product</button>
+    </div>
+</ng-template>
+<!-- End Delete Product -->

@@ -1,0 +1,86 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Entity</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddEntityModal(createEntity)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Entity
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="EntityArray" [dataColumns]="Columns" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false"  [actionsArray]="Actions"
+                            [isActionsEnabled]="true"
+                            (onActionPerformed)="deleteElement($event, deleteEntity)" >
+                        </easy-grid>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- createEntity -->
+<ng-template #createEntity role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Entity <span class="mandatory" style="color:red">* Fields are
+                Mandatory</span>
+        </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="EntityFormGroup">
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="entityName">Entity Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="entityName" class="form-control rounded_" id="entityName"
+                        placeholder="Entity Name"
+                        [ngClass]="{ 'is-invalid': getEntityFormControls.entityName.errors && (getEntityFormControls.entityName.dirty || getEntityFormControls.entityName.touched) }"
+                        required>
+                    <div *ngIf="getEntityFormControls.entityName.errors && (getEntityFormControls.entityName.dirty || getEntityFormControls.entityName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEntityFormControls.entityName.errors" class="error">
+                            Entity Name is Required !!
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" [disabled]="EntityFormGroup.invalid" (click)="onSubmit(createEntity)">Save
+            Entity</button>
+    </div>
+</ng-template>
+<!-- ----End ------>
+
+
+<!-- Start Delete entity -->
+<ng-template #deleteEntity role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Entity</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this Entity !!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="DeleteEntity(deleteEntity)">Delete Oem</button>
+    </div>
+</ng-template>
+
+
+<!-- End Delete Oem -->

@@ -1,0 +1,151 @@
+// @import "node_modules/bootstrap/scss/bootstrap";
+
+/* 
+    Inline div start here
+*/
+
+div.inline {
+    display: inline; /* the default for span */
+}
+
+/*
+    Table style configurations goes here
+*/
+table {
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: small;
+    border-collapse: collapse;
+    width: 100%;
+    border: none;
+}
+
+table th, table td {
+    border: 0.5px solid rgb(206, 206, 206);
+    padding: 8px;
+    text-align: left;
+}
+
+table tr:nth-child(even){background-color: #f2f2f2;}
+
+table td {
+    cursor: pointer;
+}
+
+table tr:hover {background-color: #ddd;}
+
+table th {
+    padding-top: 12px;
+
+    font-size:x-small;
+    font-weight: bold;
+  
+    background-color: #ccc;
+    color: #2b2b2b;
+    position: -webkit-sticky; // this is for all Safari (Desktop & iOS), not for Chrome
+    position: sticky;
+    top: 0;
+    z-index: 1; // any positive value, layer order is global
+}
+
+.my-custom-scrollbar {
+    position: relative;
+    max-height: 500px;
+    overflow: auto;
+}
+.table-wrapper-scroll-y {
+    display: block;
+}
+
+/*
+    Table style configurations ends here
+*/
+
+/*
+    svg styles goes here
+*/
+
+svg {
+    cursor: pointer;
+}
+
+/*
+    scg styles ends here
+*/
+
+/*
+    input styles goes here
+*/
+
+input[type=text] {
+    width: 15%;
+    padding: 6px 10px;
+    margin-left: 5px;
+    display: inline-block;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 1rem;
+    line-height: 1.6;
+  }
+
+  .select-cols {
+    width: 15%;
+    height: 40px;
+    margin-bottom: 4.5px;
+    display: inline-block;
+  }
+
+  .select-actions {
+    width: 15%;
+    height: 40px;
+    margin-right: 5px;
+    display: inline-block;
+    float: right;
+  }
+
+  .select-columns {
+    width: 15%;
+    margin-right: 5px;
+    display: inline-block;
+    float: right;
+  }
+
+  .download-icon {
+      height: 40px;
+      float: right;
+      background-color: #003366 ; 
+    }
+
+  .columnSelector {
+      margin-top: 5px;
+  }
+/* 
+    input styles ends here
+*/
+
+/* 
+    pagination style goes here
+*/
+  caption {
+      width: 150px;
+      padding: 13px 5px;
+  }
+  nav {
+      margin-top: 5px;
+      float: right;
+  }
+
+  .select-nav {
+      height: 37.5px;
+  }
+  .totalItems {
+      float: right;
+      font-size: 14px;
+      font-family: Arial, Helvetica, sans-serif;
+  }
+  .page-item {
+      cursor: pointer;
+  }
+/* 
+  pagination style goes here
+*/

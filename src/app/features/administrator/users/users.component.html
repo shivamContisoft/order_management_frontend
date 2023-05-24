@@ -1,0 +1,325 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>User's</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddUserModal(createuser)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add User
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <easy-grid [dataArray]="usersArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                    [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                    [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewuser)" (onActionPerformed)="editElement($event, edituser)" (onActionPerformed)="deleteElement($event,deleteuser)">
+                </easy-grid>
+                    <!-- <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Contact</th>
+                                    <th sortable="office">E-mail</th>
+                                    <th sortable="age">Designation</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Users; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.firstName}} {{table.lastName}}
+                                    </td>
+                                    <td>
+                                        {{table.contact}}
+                                    </td>
+                                    <td>
+                                        {{table.email}}
+                                    </td>
+                                    <td>
+                                        {{table.designation}}
+                                    </td>
+                                    <td>
+                              
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewUserModal(table.id, viewuser)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                    
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditUserModal(table.id, edituser)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                       
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteUserModal(deleteuser)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                  
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add User -->
+<ng-template #createuser role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add User  <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="userFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched) }" required>
+                    <div *ngIf="getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched) }"
+                        required />
+                    <div *ngIf="getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="e-mail"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched) }"
+                        required />
+                    <div *ngIf="getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact" 
+                    [ngClass]="{ 'is-invalid': getUserFormControls.contact.errors && (getUserFormControls.contact.dirty || getUserFormControls.contact.touched) }"/>
+                <div *ngIf="getUserFormControls.contact.errors && (getUserFormControls.contact.dirty || getUserFormControls.contact.touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="getUserFormControls.contact.errors" class="error">
+                       contact no Invalid
+                    </div>
+                </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation"/>
+                </div>
+                <div class="col-sm-6">
+                    <label for="department">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                    <select id="department" class="form-select" formControlName="department" placeholder="Select Department Type" required>
+                        <option value="default" selected>Select Department Type</option>
+                        <option value="4">HR</option>
+                        <option value="5">Finance</option>
+                        <option value="6">Technical</option>
+                        <option value="7">Sales Head</option>
+                        <option value="8">Service Delivery Head</option>
+                        <option value="9">Final</option>
+                        <option value="10">Operational</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createuser);" [disabled]="userFormGroup.invalid">Save User</button>
+    </div> 
+</ng-template>
+<!-- End Add User -->
+
+<!-- Start Edit User -->
+<ng-template #edituser role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit User  <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="userFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched) }" required>
+                    <div *ngIf="getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched) }"
+                        required />
+                    <div *ngIf="getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="e-mail"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched) }"
+                        required />
+                    <div *ngIf="getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No</label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation" />
+                </div>
+                <div class="col-sm-6">
+                    <label for="department">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                    <select id="department" class="form-select" formControlName="department" placeholder="Select Department Type" required>
+                        <option value="default" selected>Select Department Type</option>
+                        <option value="4">HR</option>
+                        <option value="5">Finance</option>
+                        <option value="7">Technical</option>
+                        <option value="6">Sales Head</option>
+                        <option value="8">Service Delivery Head</option>
+                        <option value="9">Final</option>
+                        <option value="10">Operational</option>
+                    </select>
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateUser(edituser);">Update User</button>
+    </div> 
+</ng-template>
+<!-- End Edit User -->
+
+<!-- Start View User -->
+<ng-template #viewuser role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View User </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="userFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name </label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched) }" disabled required>
+                    <div *ngIf="getUserFormControls.firstName.errors && (getUserFormControls.firstName.dirty || getUserFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name </label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched) }" disabled
+                        required />
+                    <div *ngIf="getUserFormControls.lastName.errors && (getUserFormControls.lastName.dirty || getUserFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail</label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Enter a valid e-mail"
+                        [ngClass]="{ 'is-invalid': getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched) }" disabled
+                        required />
+                    <div *ngIf="getUserFormControls.email.errors && (getUserFormControls.email.dirty || getUserFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getUserFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No</label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact" disabled/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation" disabled/>
+                </div>
+                <!-- <div class="col-sm-6">
+                    <label for="department">Department Type</label>
+                    <select id="department" class="form-select" formControlName="department" placeholder="Select Department Type" disabled required>
+                        <option value="default" selected>Select Department Type</option>
+                        <option value="4">HR</option>
+                        <option value="5">Finance</option>
+                        <option value="6">Technical</option>
+                        <option value="7">Sales Head</option>
+                        <option value="8">Service Delivery Head</option>
+                        <option value="9">Final</option>
+                    </select>
+                </div> -->
+            </div>  
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div> 
+</ng-template>
+<!-- End View User -->
+
+<!-- Start Delete User -->
+<ng-template #deleteuser role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete User</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this user!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteUser(deleteuser)">Delete User</button>
+    </div>
+</ng-template>
+<!-- End Delete User -->

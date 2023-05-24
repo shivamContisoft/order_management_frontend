@@ -1,0 +1,374 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Approval-Flow</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddApprovalModal(createapproval)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Approval-Flow
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="card-body">
+                        <easy-grid [dataArray]="approvalArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewapproval)" (onActionPerformed)="editElement($event, editapproval)" (onActionPerformed)="deleteElement($event, deleteapproval)">
+                    </easy-grid>
+                    <!-- Table -->
+                    <!-- <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Product Type</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Approvals; let i=index">
+                                <tr>
+                                    <td>
+                                       {{table.productName}}
+                                    </td>
+                                    <td>
+                                  
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="setElementId(table.productType);openViewApprovalModal(table.productType, viewapproval)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                   
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.productType);openEditApprovalModal(table.productType, editapproval)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                  
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.productType);openDeleteApprovalModal(deleteapproval)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                    <!-- End table -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add approval -->
+<ng-template #createapproval role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Approval Flow  <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="approvalFormGroup">
+            <div class="row">
+                <div class="col-sm-6 mt-2">
+                    <label for="productType">Product Type<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="productType" id="productType" [attr.disabled]="state ? '' : null" [(ngModel)]="optionValue" required>
+                        <option value="default">Select Product</option>
+                        <option value="{{item.id}}" *ngFor="let item of Products">{{item.productName}}</option>
+                    </select>
+                </div>
+                <hr class="hr-line  mt-2">
+
+                <ng-container style="display: none;" *ngIf="optionValue == '1'">
+                    <div class="col-sm-5 mt-2">
+                        <label for="departmentFMS">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                        <select id="departmentFMS" class="form-select" formControlName="departmentFMS" (change)="getUsers(departmentValue.value)" placeholder="Select Department Type" #departmentValue required>
+                            <option value="default" selected>Select Department Type</option>
+                            <option value="4">HR</option>
+                            <option value="5">Finance</option>
+                            <option value="7">Technical</option>
+                            <option value="8">Service Delivery</option>
+                            <option value="9">Final</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 mt-2">
+                        <label for="userIdFMS">Select Approval Stages<span class="mandatory" style="color: red;">*</span></label>
+                        <select class="form-select" id="userIdFMS" formControlName="userIdFMS">
+                            <option value="default" selected>Select Approval Stages</option>
+                            <option value="{{item.id}}" *ngFor="let item of Users">{{item.firstName}} {{item.lastName}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <!-- <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlowFMS()" [disabled]="!approvalFormGroup.controls.departmentFMS.value || !approvalFormGroup.controls.userIdFMS.value"> -->
+                        <button style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlowFMS()" [disabled]="!approvalFormGroup.controls.departmentFMS.value || !approvalFormGroup.controls.userIdFMS.value">Add Approval Flow</button>
+                    </div>
+                    <table class="table table-bordered table-hover" style="border: 1px solid #000000 !important;margin-top: 23px;">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Department Type</th>
+                                <th>Approval Stage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> 
+                            <tr *ngFor="let item of tableData; let i = index;" >
+                                <td>{{i+1}}</td>
+                                <td>{{item.departmentName}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon" (click)="removeFlowFMS(index);" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+                
+                <ng-container style="display: none;" *ngIf="optionValue == '2' || optionValue == '3' || optionValue == '4' || optionValue == '5' || optionValue == '6' || optionValue == '7' || optionValue == '8' || optionValue == '9' || optionValue == '10' ">
+                    <div class="col-sm-5 mt-2">
+                        <label for="department">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                        <select id="department" class="form-select" formControlName="department" (change)="getUsers(departmentValue.value)" placeholder="Select Department Type" #departmentValue required>
+                            <option value="default" selected>Select Department Type</option>
+                            <option value="5">Finance</option>
+                            <option value="7">Technical</option>
+                            <option value="8">Service Delivery</option>
+                            <option value="9">Final</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 mt-2">
+                        <label for="userId">Select Approval Stages<span class="mandatory" style="color: red;">*</span></label>
+                        <select class="form-select" id="userId" formControlName="userId">
+                            <option value="default" selected>Select Approval Flow</option>
+                            <option value="{{item.id}}" *ngFor="let item of Users">{{item.firstName}} {{item.lastName}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <!-- <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlow()"> -->
+                        <button style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlow()" [disabled]="!approvalFormGroup.controls.department.value || !approvalFormGroup.controls.userId.value">Add Approval Flow</button>
+
+                    </div>
+                    <table class="table table-bordered table-hover" style="border: 1px solid #000000 !important;margin-top: 23px;">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Department Type</th>
+                                <th>Approval Stage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> 
+                            <tr *ngFor="let item of tableData; let i = index;" >
+                                <td>{{i+1}}</td>
+                                <td>{{item.departmentName}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon" (click)="removeFlow(index);" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createapproval);">Save Approval</button>
+    </div> 
+</ng-template>
+<!-- End Add approval -->
+
+<!-- Start Edit approval -->
+<ng-template #editapproval role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit Approval Flow </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <!-- Table -->
+        <form [formGroup]="approvalFormGroup">
+            <div class="row">
+                <div class="col-sm-6 mt-2">
+                    <label for="productType">Product Type<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="productName" value="{{productName}}" formControlName="productName" placeholder="Product Type" readonly>
+                </div>
+                <hr class="hr-line  mt-2">
+
+                <ng-container style="display: none;" *ngIf="optionValue == '1'">
+                    <div class="col-sm-5 mt-2">
+                        <label for="departmentFMS">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                        <select id="departmentFMS" class="form-select" formControlName="departmentFMS" (change)="getUsers(departmentValue.value)" placeholder="Select Department Type" #departmentValue required>
+                            <option value="default" selected>Select Department Type</option>
+                            <option value="4">HR </option>
+                            <option value="5">Finance Approval </option>
+                            <option value="7">Technical </option>
+                            <option value="8">Service Delivery Head</option>
+                            <option value="9">Final</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 mt-2">
+                        <label for="userIdFMS">Select Approval Stages<span class="mandatory" style="color: red;">*</span></label>
+                        <select class="form-select" id="userIdFMS" formControlName="userIdFMS">
+                            <option value="default" selected>Select Approval Stages</option>
+                            <option value="{{item.id}}" *ngFor="let item of Users">{{item.firstName}} {{item.lastName}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlowFMS()">
+                    </div>
+                    <table class="table table-bordered table-hover" style="border: 1px solid #000000 !important;margin-top: 23px;">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Department Type</th>
+                                <th>Approval Stage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> 
+                            <tr *ngFor="let item of tableData; let i = index;" >
+                                <td>{{i+1}}</td>
+                                <td>{{item.departmentName}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon" (click)="removeFlowFMS(index);" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+                
+                <ng-container style="display: none;" *ngIf="optionValue == '2' || optionValue == '3' || optionValue == '4' || optionValue == '5' || optionValue == '6' || optionValue == '7' || optionValue == '8' || optionValue == '9' || optionValue == '10'">
+                    <div class="col-sm-5 mt-2">
+                        <label for="department">Department Type<span class="mandatory" style="color: red;">*</span></label>
+                        <select id="department" class="form-select" formControlName="department" (change)="getUsers(departmentValue.value)" placeholder="Select Department Type" #departmentValue required>
+                            <option value="default" selected>Select Department Type</option>
+                            <option value="5">Finance Approval</option>
+                            <option value="6">Technical </option>
+                            <option value="7">Service Delivery</option>
+                            <option value="9">Final</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-4 mt-2">
+                        <label for="userId">Select Approval Stages<span class="mandatory" style="color: red;">*</span></label>
+                        <select class="form-select" id="userId" formControlName="userId">
+                            <option value="default" selected>Select Approval Flow</option>
+                            <option value="{{item.id}}" *ngFor="let item of Users">{{item.firstName}} {{item.lastName}}</option>
+                        </select>
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add Approval Flow" (click)="addApprovalFlow()">
+                    </div>
+                    <table class="table table-bordered table-hover" style="border: 1px solid #000000 !important;margin-top: 23px;">
+                        <thead>
+                            <tr>
+                                <th>Sr No.</th>
+                                <th>Department Type</th>
+                                <th>Approval Stage</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr> 
+                            <tr *ngFor="let item of tableData; let i = index;" >
+                                <td>{{i+1}}</td>
+                                <td>{{item.departmentName}}</td>
+                                <td>{{item.userName}}</td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon" (click)="removeFlow(index);" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </ng-container>
+            </div>
+        </form>
+        <div class="table-responsive">
+            <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                <thead>
+                    <tr>
+                        <th sortable="name">Department Name</th>
+                        <th sortable="name">Stage Approval User</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let table of approvalData; let i=index">
+                    <tr>
+                        <td>
+                            {{table.departmentName}}
+                        </td>
+                        <td>
+                            {{table.userName}}
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- End table -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateApproval(editapproval);">Update Approval</button>
+    </div> 
+</ng-template>
+<!-- End Edit approval -->
+
+<!-- Start View approval -->
+<ng-template #viewapproval role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Approval Flow </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <!-- Table -->
+        <span><b>{{productName}} : </b></span>
+        <div class="table-responsive">
+            <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                <thead>
+                    <tr>
+                        <th sortable="name">Department Name</th>
+                        <th sortable="name">Stage Approval User</th>
+                        <th sortable="name">Approval Created Date</th>
+                    </tr>
+                </thead>
+                <tbody *ngFor="let table of approvalData; let i=index">
+                    <tr>
+                        <td>{{table.departmentName}}</td>
+                        <td>{{table.userName}}</td>
+                        <td>{{table.createdAt | date:'dd-MM-yyyy'}}</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <!-- End table -->
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+    </div> 
+</ng-template>
+<!-- End View approval -->
+
+<!-- Start Delete approval -->
+<ng-template #deleteapproval role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete approval</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this approval stages!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteApproval(deleteapproval)">Delete Approval</button>
+    </div>
+</ng-template>
+<!-- End Delete approval -->

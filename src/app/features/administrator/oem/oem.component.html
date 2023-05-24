@@ -1,0 +1,223 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>OEM</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddOemModal(createoem)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add OEM
+                        </button>
+                    </div>
+                    <div class="col-md-3" style="margin-left: 20px">
+                        <label for="fileSelector">Upload XLSX File</label>
+                        <input name="fileSelector" accept=".xlsx" type="file" (change)="convertFile($event,errorModal)" />
+                    </div>
+                </div>
+                <div class="card-body">
+
+                    <div class="card-body">
+                        <easy-grid [dataArray]="OemArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewoem)" (onActionPerformed)="editElement($event, editoem)" (onActionPerformed)="deleteElement($event, deleteoem)">
+                    </easy-grid>
+                    <!-- Table -->
+                    <!-- <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Oems; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.oemName}}
+                                    </td>
+                                    <td>
+                                        {{table.description}}
+                                    </td>
+                                    <td>
+                                    
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewOemModal(table.id, viewoem)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                      
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditOemModal(table.id, editoem)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                     
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteOemModal(deleteoem)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                    <!-- End table -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Oem -->
+<ng-template #createoem role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add OEM <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="oemFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="oemName">OEM Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="oemName" class="form-control rounded_" id="oemName"
+                        placeholder="Oem Name" [ngClass]="{ 'is-invalid': getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched) }" required>
+                    <div *ngIf="getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.oemName.errors" class="error">
+                            OEM Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Short form of OEM</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createoem)" [disabled]="oemFormGroup.invalid">Save OEM</button>
+    </div>
+</ng-template>
+<!-- End Add Oem -->
+
+
+<!-- Start Edit Oem -->
+<ng-template #editoem role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit OEM <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="oemFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="oemName">OEM Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="oemName" class="form-control rounded_" id="oemName"
+                        placeholder="Oem Name" [ngClass]="{ 'is-invalid': getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched) }" required>
+                    <div *ngIf="getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.oemName.errors" class="error">
+                            OEM Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Short form of OEM</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateOem(editoem)">Update OEM</button>
+    </div>
+</ng-template>
+<!-- End Add Oem -->
+
+<!-- Start View Oem -->
+<ng-template #viewoem role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View OEM <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="oemFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="oemName">OEM Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="oemName" class="form-control rounded_" id="oemName"
+                        placeholder="Oem Name" [ngClass]="{ 'is-invalid': getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched) }" required>
+                    <div *ngIf="getOemFormControls.oemName.errors && (getOemFormControls.oemName.dirty || getOemFormControls.oemName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.oemName.errors" class="error">
+                            OEM Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Short form of OEM</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- End View Oem -->
+
+<!-- Start Delete Oem -->
+<ng-template #deleteoem role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Oem</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this oem!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteOem(deleteoem)">Delete Oem</button>
+    </div>
+</ng-template>
+<!-- End Delete Oem -->
+
+<ng-template #errorModal role="document" let-modal>
+    <div class="modal-header">
+        <h3>Error Details</h3>
+        <!-- <button type="button" class="btn btn-warning btn-with-icon"  (click)="exportErrorData();" style="float: right;">
+            <i class="fa fa-download fa-fw"></i></button> -->
+    </div>
+    <div class="modal-body">
+        <div class="table-responsive" style="max-height:400px;padding-left: 20px;">
+            <table class="table table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th>Remove</th>
+                        <th>OEM</th>
+                        <th>Description of OEM</th> 
+                        
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let table of dataWithErrors let index = index">
+                        <td>{{table.reason}}</td>
+                        <!-- <td><i class="fa fa-trash-o" aria-hidden="true" style="color: red;cursor: pointer;" (click)="removeRecord(index, pageNumber);"></i></td> -->
+                        <td>{{table.oemName}}</td>
+                        <td>{{table.description}}</td>
+                        
+                        
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        
+    </div>
+    <div class="modal-footer">
+        <button class="btn btn-primary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>

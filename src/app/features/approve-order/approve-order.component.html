@@ -1,0 +1,462 @@
+<div class="container-fluid">
+
+    <!-- start page title -->
+    <app-page-title title="Approve Order" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <!-- end page title -->
+
+
+
+<!-- Order Approved && Approved By Me  -->
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <li [ngbNavItem]="1">
+            <a ngbNavLink>Order Approved</a>
+            <ng-template ngbNavContent>
+                <div class="card">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="ApprovalOrdersArray" [dataColumns]="Columns" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false"
+                            [actionsArray]="Actions" [isActionsEnabled]="true"
+                            (onActionPerformed)="viewElement($event, viewapprovalorder)">
+                        </easy-grid>
+                    </div>
+                </div>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+            <a ngbNavLink>Approved By Me</a>
+            <ng-template ngbNavContent>
+                <div class="card">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="ApprovedOrderByMeArray" [dataColumns]="Column" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false"
+                            [actionsArray]="Action">
+                        </easy-grid>
+                    </div>
+                </div>
+            </ng-template>
+        </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>
+<!-- ---------------------------------- -->
+
+
+<!-- Start View Order -->
+<ng-template #viewapprovalorder role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Order </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="approvalOrderFormGroup">
+            <hr class="hr-line">
+            <h5>General</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="entity" class="form-control rounded_" id="entity"
+                        placeholder="Entity" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" formControlName="companyName" class="form-control rounded_" id="companyName"
+                        placeholder="Company Name" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyPaymentTerms">Company Payment Terms<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="companyPaymentTerms" class="form-control rounded_"
+                        id="companyPaymentTerms" placeholder="Company Payment Terms" disabled>
+                </div>
+            </div>
+            <!-- <div class="row">
+                    <div class="col-sm-4 mt-2">
+                        <label for="oem">OEM</label>
+                        <input type="text" formControlName="oem" class="form-control rounded_" id="oem" placeholder="OEM" disabled>
+                    </div>
+                    <div class="col-sm-4 mt-2">
+                        <label for="oemDealerId">OEM Dealer Id</label>
+                        <input type="text" formControlName="oemDealerId" class="form-control rounded_" id="oemDealerId" placeholder="OEM Dealer Id" disabled>
+                    </div>
+                </div> -->
+
+            <!-- 
+            <hr class="hr-line mt-2">
+            <h5>BDM </h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="businessUnit">Business Unit</label>
+                    <input type="text" formControlName="businessUnit" class="form-control rounded_" id="businessUnit"
+                        placeholder="Business Unit" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="bdm">BDM</label>
+                    <input type="text" formControlName="bdm" class="form-control rounded_" id="bdm" placeholder="BDM"
+                        disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="bdmPercentage">BDM Percentage</label>
+                    <input type="text" formControlName="bdmPercentage" class="form-control rounded_" id="bdmPercentage"
+                        placeholder="BDM Percentage" disabled>
+                </div>
+            </div> -->
+
+            <!-- oem -->
+
+            <!-- <hr class="hr-line">
+            <label>OEM Info</label>
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>OEM Name</th>
+                            <th>OEM oemDealerId</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let table of oemList; let index = index">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{table.tbl_masters_oem.oemName}}</td>
+                            <td>{{table.oemDealerId}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+
+            <!-- <hr class="hr-line mt-2">
+            <h5>Product Details</h5>
+            <hr class="hr-line">
+
+
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Product Name</th>
+                            <th>Product Description</th>
+                            <th>Total EUP</th>
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let table of productList; let index = index;">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{table.tbl_masters_product.productName}}</td>
+                            <td>{{table.productDescription}}</td>
+                            <td>{{table.poValue}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+ -->
+
+
+
+
+            <hr class="hr-line mt-2">
+            <h5>Customer</h5>
+            <hr class="hr-line">
+            <!-- Start Product Selection for sale  -->
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="poNo">PO No</label>
+                    <input type="text" class="form-control" id="poNo" formControlName="poNo" placeholder="PO No"
+                        disabled />
+                </div>
+                <div class="col-sm-4 ">
+                    <label for="poDate">Date Of PO</label>
+                    <input type="date" class="form-control" id="poDate" formControlName="poDate"
+                        placeholder="Date Of PO" disabled />
+                </div>
+                <div class="col-sm-4 ">
+                    <label for="duration">Duration</label>
+                    <input type="text" class="form-control" id="duration" formControlName="duration"
+                        placeholder="Duration" disabled />
+                </div>
+            </div>
+
+            <hr class="hr-line mt-2">
+            <h5>Product Details</h5>
+            <hr class="hr-line">
+
+
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Product Name</th>
+                            <th>OEM Name</th>
+                            <th>Business Unit</th>
+                            <th>BDM</th>
+                            <th>BDM Percentage</th>
+                            <!-- <th>EUP</th> -->
+
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let table of productList; let index = index;">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{table.tbl_masters_product.productName}}</td>
+                            <td>{{table.tbl_masters_oem?.oemName}}</td>
+                            <!-- [0].tbl_order_oems[0].tbl_masters_oems[0].oemName -->
+                            <td>{{table.tbl_masters_business_unit?.categoryName}}</td>
+                            <td>{{table.bdm}}</td>
+                            <td>{{table.bdmPercentage}}</td>
+                            <!-- <td>{{table.poValue}}</td> -->
+                        </tr>
+                    </tbody>
+                </table>
+                <div class="row">
+                    <div class="col-sm-6">
+                        <label for="poValue">Total EUP</label>
+                        <input type="text" name="poValue" class="form-control" id="poValue" formControlName="poValue"
+                            placeholder="poValue" disabled>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <label for="externalCost">External Cost out</label>
+                        <input type="text" name="externalCost" class="form-control" id="externalCost"
+                            formControlName="externalCost" placeholder="External Cost" disabled>
+                    </div>
+                </div>
+            </div>
+
+
+            <!-- <div class="row">
+                <div class="col-sm-4 mt-2">
+                    <label for="poValue">PO Value</label>
+                    <input type="number" class="form-control" id="poValue" formControlName="poValue"
+                        placeholder="PO Value" disabled />
+                </div>
+            </div> -->
+            <!-- Start Here is the Add on Product + Attach + Service //for Sale -->
+            <div class="row">
+                <div class="col-sm-4 mt-2" id="Div1">
+                    <label>PO Product Value :</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductValue"
+                        placeholder="Enter PO Product Value..." disabled>
+                </div>
+                <div class="col-sm-4 mt-2" id="Div2">
+                    <label>PO Attach Value :</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductAttachValue"
+                        placeholder="Enter PO Attach Value..." disabled>
+                </div>
+                <div class="col-sm-4 mt-2" id="Div3">
+                    <label>PO Service Value:</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductServiceValue"
+                        placeholder="Enter PO Service Value..." disabled>
+                </div>
+            </div>
+            <!-- End Here is the Add on Product + Attach + Service //for Sale -->
+
+            <!-- End Product Selection for sale -->
+
+
+
+            <!-- End Here is the Add on Product + Attach + Service //for Purchase -->
+            <hr class="hr-line mt-2">
+            <h5>Vendors Info</h5>
+            <hr class="hr-line">
+            <!-- Start Add On Fly Vendor Selection -->
+
+
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Vendor Name</th>
+                            <th>Vendor Payment Terms</th>
+                            <th>TP</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let table of addOnVendors; let index = index">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{table.tbl_masters_vendor.vendorName}}</td>
+                            <td>{{table.vendorPaymentValue}}</td>
+                            <td>{{table.vendorPoValue}}</td>
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="row">
+                <div class="col-sm-12">
+                    <label for="poPurchaseValue">PO Value</label>
+                    <input type="number" class="form-control" id="poPurchaseValue" formControlName="poPurchaseValue"
+                        placeholder="Product Value" disabled />
+                </div>
+            </div>
+
+            <!-- Start Here is the Add on Product + Attach + Service //for Purchase -->
+            <div class="row">
+                <div class="col-sm-4" id="Div4">
+                    <label>PO Product Value :</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductValue"
+                        placeholder="Enter PO Product Value..." disabled>
+                </div>
+                <div class="col-sm-4" id="Div5">
+                    <label>PO Attach Value :</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductAttachValue"
+                        placeholder="Enter PO Attach Value..." disabled>
+                </div>
+                <div class="col-sm-4" id="Div6">
+                    <label>PO Service Value:</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductServiceValue"
+                        placeholder="Enter PO Service Value..." disabled>
+                </div>
+            </div>
+
+            <!-- <hr class="hr-line mt-2">
+            <h5>BDM Info</h5>
+            <hr class="hr-line">
+
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>Sr. No</th>
+                            <th>Number</th>
+                            <th>Business Unit</th>
+                            <th>BDM</th>
+                            <th>BDM Percentage</th>
+                        </tr>
+                    </thead>
+                    <tbody *ngFor="let table of addBDMs; let index = index">
+                        <tr>
+                            <td>{{index+1}}</td>
+                            <td>{{table.srno}}</td>
+                            <td>{{table.tbl_masters_business_unit.categoryName}}</td>
+                            <td>{{table.bdm}}</td>
+                            <td>{{table.bdmPercentage}}</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div> -->
+
+
+            <!-- GP -->
+
+            <hr class="hr-line mt-2">
+            <div class="table-responsive">
+                <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                    <thead>
+                        <tr>
+                            <th>POGM</th>
+                            <th>POGM%</th>
+                            <th>PM</th>
+                            <th>BR</th>
+                            <th>External Cost</th>
+                            <th>GP</th>
+                            <th>GP%</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>{{pogm}}</td>
+                            <td>{{pogmPer | number:'1.0-2'}}</td>
+                            <td>{{pmvalue}}</td>
+                            <td>{{brValue}}</td>
+                            <td>{{externalCost}}</td>
+                            <td>{{gpValue}}</td>
+                            <td>{{gpPer|number:'1.0-2'}}</td>
+
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- end  -->
+            <!-- End Add On Fly Vendor Selection -->
+            <!-- End Product Selection for purchase -->
+            <hr class="hr-line mt-2">
+            <h5>Attachment</h5>
+            <hr class="hr-line">
+            <!-- Start Attachment -->
+            <div class="row">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of selectedFiles; let index = index">
+                                <td>{{index+1}}</td>
+                                <td>{{item.fileName}}</td>
+
+                                <td>
+                                    <button class="btn btn-success" (click)="downloadFile(item);">Download
+                                        file</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- End Attachment -->
+            <div *ngIf="viewstep">
+                <hr class="hr-line mt-2">
+                <h5>History</h5>
+                <hr class="hr-line">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Name of last Approval</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of history; let i=index">
+                            <tr>
+                                <td>{{table.tbl_user.firstName}}</td>
+                                <td>{{table.createdAt | date:'dd-MM-yyyy'}} {{table.time}}</td>
+                                <td>
+                                    <span *ngIf="table.status == 'Pending'" style="color:orange">
+                                        {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Approved'" style="color:green">
+                                        {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Rejected'" style="color:red">
+                                        {{table.status}}</span>
+                                </td>
+                                <td>{{table.comment}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!--end History table-->
+            <hr class="hr-line mt-2">
+            <!-- <h5>History</h5>
+                <hr class="hr-line"> -->
+            <div class="col-sm-4">
+                <label for="comment">Comment</label>
+                <textarea type="text" style="height: 20px; width: 500px;" class="form-control" id="comment"
+                    formControlName="comment" placeholder="write your comment...">
+                    </textarea>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-success" (click)="markAsApprove(viewapprovalorder);">Approve</button>
+        <button class="btn btn-danger" (click)="markAsReject(viewapprovalorder);">Reject</button>
+    </div>
+</ng-template>
+<!-- ---------------- -->

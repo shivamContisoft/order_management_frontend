@@ -1,0 +1,67 @@
+
+<!-- onDateSubmit filter -->
+<div class="container-fluid">
+    <div class="col-xl-12" style="padding-bottom:15px;">
+        <h1 style="color:green;text-align:center">Invoice Report</h1>
+        <br><br>
+        <form [formGroup]="dateFormGroup">
+
+            <div class="row">
+                <div class="col-sm-2">
+                    <label for="formDate">From date</label>
+                    <input type="date" class="form-control" id="fromDate" formControlName="fromDate">
+                </div>
+                <div class="col-sm-2">
+                    <label for="toDate">To Date</label>
+                    <input type="date" class="form-control" id="toDate" formControlName="toDate">
+                </div>
+                <!-- <div class="col-sm-2">
+                    <label for="orderId">Select Invoice Type</label>
+                    <select id="invoiceType" class="form-select" formControlName="invoiceType">
+                        <option value="default"></option>
+                        <option value="Customer">Customer</option>
+                        <option value="Vendor">Vendor</option>
+                    </select>
+                </div> -->
+
+                <div class="col-sm-2" style=" padding-top: 30px;">
+                    <button class="btn btn-primary  button-in" [disabled]="dateFormGroup.invalid"
+                        (click)="onDateSubmit()">Search</button>
+                </div>
+
+            </div>
+        </form>
+    </div>
+</div><br>
+
+
+
+<div class="container-fluid">
+    <ul ngbNav #nav="ngbNav" [(activeId)]="active" class="nav-tabs">
+        <li [ngbNavItem]="1">
+            <a ngbNavLink>Customer Invoice</a>
+            <ng-template ngbNavContent>
+                <div class="card">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="saleInvoicesArray" [dataColumns]="Columns" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false">
+                        </easy-grid>
+                    </div>
+                </div>
+            </ng-template>
+        </li>
+        <li [ngbNavItem]="2">
+            <a ngbNavLink>Vendor Invoice</a>
+            <ng-template ngbNavContent>
+                <div class="card">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="purchaseInvoicesArray" [dataColumns]="Columns" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false">
+                        </easy-grid>
+                    </div>
+                </div>
+            </ng-template>
+        </li>
+    </ul>
+    <div [ngbNavOutlet]="nav" class="mt-2"></div>
+</div>

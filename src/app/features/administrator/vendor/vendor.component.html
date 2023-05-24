@@ -1,0 +1,721 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Vendor</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddVendorModal(createvendor)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Vendor
+                        </button>
+                    </div>
+                    <div class="row" *ngIf="userAccountType!=2 ">
+                        <div class="col-md-3" style="margin-left: 20px">
+                            <label for="fileSelector">Upload XLSX File</label>
+                            <input name="fileSelector" accept=".xlsx" type="file"
+                                (change)="convertFile($event,errorModal)" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row" *ngIf="userAccountType!=2 ">
+                <div class="card-body">
+                    <div class="card-body">
+                        <easy-grid [dataArray]="vendorArray" [dataColumns]="Columns" [primaryKey]="'id'"
+                            [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false"
+                            [actionsArray]="Actions" [isActionsEnabled]="true"
+                            (onActionPerformed)="viewElement($event, viewvendor)"
+                            (onActionPerformed)="editElement($event, editvendor)"
+                            (onActionPerformed)="deleteElement($event, deletevendor)">
+                        </easy-grid>
+                        <!-- Starts Table -->
+                        <!-- <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Contact Person Name</th>
+                                    <th sortable="office">Contact Person E-mail</th>
+                                    <th sortable="age">Contact Person Contact</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Vendors; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.vendorName}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonName1}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonEmail1}}
+                                    </td>
+                                    <td>
+                                        {{table.contactPersonContact1}}
+                                    </td>
+                                    <td>
+                                       
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewVendorModal(table.id, viewvendor)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                       
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditVendorModal(table.id, editvendor)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                     
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteVendorModal(deletevendor)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div> -->
+                        <!-- End table -->
+                    </div>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Start Add Vendor -->
+    <ng-template #createvendor role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Add Vendor <span class="mandatory" style="color:red">* Fields are
+                    Mandatory</span></h5>
+            <button type="button" class="btn-close" aria-hidden="true"
+                (click)="resetForm();modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="vendorFormGroup">
+                <hr class="hr-line">
+                <h5>General</h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="vendorName">Vendor Name <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="text" formControlName="vendorName" class="form-control rounded_" id="vendorName"
+                            placeholder="Vendor Name"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched) }"
+                            required>
+                        <div *ngIf="getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.vendorName.errors" class="error">
+                                Vendor Name is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <label for="address">Address</label>
+                        <textarea type="text" style="height: 20px;" class="form-control" id="address"
+                            formControlName="address" placeholder="Address"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="city">City </label>
+                        <input type="city" formControlName="city" class="form-control rounded_" id="state"
+                            placeholder="city">
+                    </div>
+
+                    <!-- <div class="col-sm-4">
+                    <label for="country">Country <span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="country" id="country" (change)="setStates(countriesList.value)"
+                        [ngClass]="{ 'is-invalid':  getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched) }" #countriesList required>
+                        <option selected>Select Country</option>
+                        <option value="India">India</option>
+                        <option *ngFor="let item of Countries" value="{{item.name}}">{{item.name}}</option>
+                        <option value="other">other</option>
+                    </select>
+                    <div *ngIf=" getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched)" class="invalid-feedback">
+                        <div *ngIf=" getVendorFormControls.country.errors" class="error">
+                            Country is required
+                        </div>
+                    </div>
+                </div> -->
+                    <div class="col-sm-4">
+                        <label for="state">State <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="state" formControlName="state" class="form-control rounded_" id="state"
+                            placeholder="state"
+                            [ngClass]="{ 'is-invalid':  getVendorFormControls.state.errors && ( getVendorFormControls.state.dirty ||  getVendorFormControls.state.touched) }"
+                            #statesList required>
+
+                        <div *ngIf=" getVendorFormControls.state.errors && ( getVendorFormControls.state.dirty ||  getVendorFormControls.state.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf=" getVendorFormControls.state.errors" class="error">
+                                State is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="country">Country <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="country" formControlName="country" class="form-control rounded_" id="country"
+                            placeholder="Country"
+                            [ngClass]="{ 'is-invalid':  getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched) }"
+                            #countriesList required>
+
+                        <div *ngIf=" getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf=" getVendorFormControls.country.errors" class="error">
+                                Country is required
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" class="form-control" id="pincode" formControlName="pincode"
+                            placeholder="Pincode" />
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Contact Person </h5>
+                <hr class="hr-line">
+                <!-- <div class="row">
+                <div class="col-sm-6">
+                   
+                </div>
+                <div class="col-sm-6">
+                    <input type="button" style="float: right;" class="btn btn-success inner" value="Add Contact Person" (click)="addVendor()">
+                </div>
+            </div> -->
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName1">Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName1"
+                            formControlName="contactPersonName1" placeholder="Contact Person Name"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonName1.errors && (getVendorFormControls.contactPersonName1.dirty || getVendorFormControls.contactPersonName1.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonName1.errors && (getVendorFormControls.contactPersonName1.dirty || getVendorFormControls.contactPersonName1.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonName1.errors" class="error">
+                                Please enter first & last Name
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact1">Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact1"
+                            formControlName="contactPersonContact1" placeholder="Contact Person Contact"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonContact1.errors && (getVendorFormControls.contactPersonContact1.dirty || getVendorFormControls.contactPersonContact1.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonContact1.errors && (getVendorFormControls.contactPersonContact1.dirty || getVendorFormControls.contactPersonContact1.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonContact1.errors" class="error">
+                                Please enter valid Contact no
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail1">Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail1"
+                            formControlName="contactPersonEmail1" placeholder="Contact Person Email"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonEmail1.errors && (getVendorFormControls.contactPersonEmail1.dirty || getVendorFormControls.contactPersonEmail1.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonEmail1.errors && (getVendorFormControls.contactPersonEmail1.dirty || getVendorFormControls.contactPersonEmail1.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonEmail1.errors" class="error">
+                                Please enter valid Email
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName2">Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName2"
+                            formControlName="contactPersonName2" placeholder="Contact Person Name"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonName2.errors && (getVendorFormControls.contactPersonName2.dirty || getVendorFormControls.contactPersonName2.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonName2.errors && (getVendorFormControls.contactPersonName2.dirty || getVendorFormControls.contactPersonName2.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonName2.errors" class="error">
+                                Please enter first & last Name
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact2">Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact2"
+                            formControlName="contactPersonContact2" placeholder="Contact Person Contact"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonContact2.errors && (getVendorFormControls.contactPersonContact2.dirty || getVendorFormControls.contactPersonContact2.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonContact2.errors && (getVendorFormControls.contactPersonContact2.dirty || getVendorFormControls.contactPersonContact2.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonContact2.errors" class="error">
+                                Please enter valid Contact no
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail2">Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail"
+                            formControlName="contactPersonEmail2" placeholder="Contact Person Email"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.contactPersonEmail2.errors && (getVendorFormControls.contactPersonEmail2.dirty || getVendorFormControls.contactPersonEmail2.touched) }" />
+                        <div *ngIf="getVendorFormControls.contactPersonEmail2.errors && (getVendorFormControls.contactPersonEmail2.dirty || getVendorFormControls.contactPersonEmail2.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.contactPersonEmail2.errors" class="error">
+                                Please enter valid Email
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div formArrayName="addOnVendor">
+                    <div class="inner mb-3 row" *ngFor="let data1 of vendordata().controls; let i=index;"
+                        [formGroupName]="i">
+                        <div class="col-sm-4">
+                            <label for="contactPersonName">Person Name</label>
+                            <input type="text" class="form-control" id="contactPersonName"
+                                formControlName="contactPersonName" placeholder="Contact Person Name" />
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="contactPersonContact">Person Contact</label>
+                            <input type="text" class="form-control" id="contactPersonContact"
+                                formControlName="contactPersonContact" placeholder="Contact Person Contact" />
+                        </div>
+                        <div class="col-sm-4">
+                            <label for="contactPersonEmail">Person Email</label>
+                            <input type="text" class="form-control" id="contactPersonEmail"
+                                formControlName="contactPersonEmail" placeholder="Contact Person Email" />
+                        </div>
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Bank </h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="panNo">PAN No</label>
+                        <input type="text" class="form-control" id="panNo" formControlName="panNo"
+                            placeholder="Pan No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="gstNo">GST No</label>
+                        <input type="text" class="form-control" id="gstNo" formControlName="gstNo"
+                            placeholder="Gst No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="bankName">Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" formControlName="bankName"
+                            placeholder="Bank Name" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="accountNo">Account No</label>
+                        <input type="text" class="form-control" id="accountNo" formControlName="accountNo"
+                            placeholder="Account No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="ifscNo">IFSC No</label>
+                        <input type="text" class="form-control" id="ifscNo" formControlName="ifscNo"
+                            placeholder="IFSC No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="branchName">Branch Name</label>
+                        <input type="text" class="form-control" id="branchName" formControlName="branchName"
+                            placeholder="Branch Name" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+                (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+            <button class="btn btn-primary" (click)="onSubmit(createvendor);" [disabled]="vendorFormGroup.invalid">Save
+                Vendor</button>
+        </div>
+    </ng-template>
+    <!-- End Add Vendor -->
+
+    <!-- Start Edit Vendor -->
+    <ng-template #editvendor role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Edit Vendor <span class="mandatory" style="color:red">* Fields are
+                    Mandatory</span></h5>
+            <button type="button" class="btn-close" aria-hidden="true"
+                (click)="resetForm();modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="vendorFormGroup">
+                <hr class="hr-line">
+                <h5>Personal </h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="vendorName">Vendor Name <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="text" formControlName="vendorName" class="form-control rounded_" id="vendorName"
+                            placeholder="Vendor Name"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched) }"
+                            required>
+                        <div *ngIf="getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.vendorName.errors" class="error">
+                                Vendor Name is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <label for="address">Address</label>
+                        <textarea type="text" style="height: 20px;" class="form-control" id="address"
+                            formControlName="address" placeholder="Address"></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="city">City </label>
+                        <input type="city" formControlName="city" class="form-control rounded_" id="state"
+                            placeholder="city">
+                    </div>
+
+
+                    <div class="col-sm-4">
+                        <label for="state">State <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="state" formControlName="state" class="form-control rounded_" id="state"
+                            placeholder="state"
+                            [ngClass]="{ 'is-invalid':  getVendorFormControls.state.errors && ( getVendorFormControls.state.dirty ||  getVendorFormControls.state.touched) }"
+                            #statesList required>
+
+                        <div *ngIf=" getVendorFormControls.state.errors && ( getVendorFormControls.state.dirty ||  getVendorFormControls.state.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf=" getVendorFormControls.state.errors" class="error">
+                                State is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="country">Country <span class="mandatory" style="color: red;">*</span></label>
+                        <input type="country" formControlName="country" class="form-control rounded_" id="country"
+                            placeholder="Country"
+                            [ngClass]="{ 'is-invalid':  getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched) }"
+                            #countriesList required>
+
+                        <div *ngIf=" getVendorFormControls.country.errors && ( getVendorFormControls.country.dirty ||  getVendorFormControls.country.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf=" getVendorFormControls.country.errors" class="error">
+                                Country is required
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" class="form-control" id="pincode" formControlName="pincode"
+                            placeholder="Pincode" />
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Contact Person </h5>
+                <hr class="hr-line">
+                <h6 class="sub-heading-top">1) Primary :</h6>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName1">Contact Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName1"
+                            formControlName="contactPersonName1" placeholder="Contact Person Name" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact1">Contact Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact1"
+                            formControlName="contactPersonContact1" placeholder="Contact Person Contact" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail1">Contact Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail1"
+                            formControlName="contactPersonEmail1" placeholder="Contact Person Email" />
+                    </div>
+                </div>
+                <h6 class="sub-heading-top">2) Secondary :</h6>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName2">Contact Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName2"
+                            formControlName="contactPersonName2" placeholder="Contact Person Name" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact2">Contact Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact2"
+                            formControlName="contactPersonContact2" placeholder="Contact Person Contact" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail2">Contact Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail"
+                            formControlName="contactPersonEmail2" placeholder="Contact Person Email" />
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Bank </h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="panNo">PAN No</label>
+                        <input type="text" class="form-control" id="panNo" formControlName="panNo"
+                            placeholder="Pan No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="gstNo">GST No</label>
+                        <input type="text" class="form-control" id="gstNo" formControlName="gstNo"
+                            placeholder="Gst No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="bankName">Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" formControlName="bankName"
+                            placeholder="Bank Name" />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="accountNo">Account No</label>
+                        <input type="text" class="form-control" id="accountNo" formControlName="accountNo"
+                            placeholder="Account No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="ifscNo">IFSC No</label>
+                        <input type="text" class="form-control" id="ifscNo" formControlName="ifscNo"
+                            placeholder="IFSC No" />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="branchName">Branch Name</label>
+                        <input type="text" class="form-control" id="branchName" formControlName="branchName"
+                            placeholder="Branch Name" />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+                (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+            <button class="btn btn-primary" (click)="updateVendor(editvendor);">Update Vendor</button>
+        </div>
+    </ng-template>
+    <!-- End Edit Vendor -->
+
+    <!-- Start View Vendor -->
+    <ng-template #viewvendor role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">View Vendor </h5>
+            <button type="button" class="btn-close" aria-hidden="true"
+                (click)="resetForm();modal.dismiss('Cross click')"></button>
+        </div>
+        <div class="modal-body">
+            <form [formGroup]="vendorFormGroup">
+                <hr class="hr-line">
+                <h5>Personal </h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="vendorName">Vendor Name </label>
+                        <input type="text" formControlName="vendorName" class="form-control rounded_" id="vendorName"
+                            placeholder="Vendor Name"
+                            [ngClass]="{ 'is-invalid': getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched) }"
+                            disabled required>
+                        <div *ngIf="getVendorFormControls.vendorName.errors && (getVendorFormControls.vendorName.dirty || getVendorFormControls.vendorName.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getVendorFormControls.vendorName.errors" class="error">
+                                Vendor Name is required
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-sm-8">
+                        <label for="address">Address</label>
+                        <textarea type="text" style="height: 20px;" class="form-control" id="address"
+                            formControlName="address" placeholder="Address" disabled></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="city">City</label>
+                        <input type="text" class="form-control" id="city" formControlName="city" placeholder="city"
+                            disabled />
+                    </div>
+
+                    <div class="col-sm-4">
+                        <label for="state">State</label>
+                        <input type="text" class="form-control" id="state" formControlName="state" placeholder="state"
+                            disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="country">Country</label>
+                        <input type="text" class="form-control" id="country" formControlName="country"
+                            placeholder="Country" disabled />
+                    </div>
+
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="pincode">Pincode</label>
+                        <input type="text" class="form-control" id="pincode" formControlName="pincode"
+                            placeholder="Pincode" disabled />
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Contact Person </h5>
+                <hr class="hr-line">
+                <h6 class="sub-heading-top">1) Primary :</h6>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName1">Contact Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName1"
+                            formControlName="contactPersonName1" placeholder="Contact Person Name" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact1">Contact Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact1"
+                            formControlName="contactPersonContact1" placeholder="Contact Person Contact" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail1">Contact Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail1"
+                            formControlName="contactPersonEmail1" placeholder="Contact Person Email" disabled />
+                    </div>
+                </div>
+                <h6 class="sub-heading-top">2) Secondary :</h6>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="contactPersonName2">Contact Person Name</label>
+                        <input type="text" class="form-control" id="contactPersonName2"
+                            formControlName="contactPersonName2" placeholder="Contact Person Name" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonContact2">Contact Person Contact</label>
+                        <input type="text" class="form-control" id="contactPersonContact2"
+                            formControlName="contactPersonContact2" placeholder="Contact Person Contact" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="contactPersonEmail2">Contact Person Email</label>
+                        <input type="text" class="form-control" id="contactPersonEmail"
+                            formControlName="contactPersonEmail2" placeholder="Contact Person Email" disabled />
+                    </div>
+                </div>
+                <hr class="hr-line">
+                <h5 class="heading-top">Bank </h5>
+                <hr class="hr-line">
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="panNo">PAN No</label>
+                        <input type="text" class="form-control" id="panNo" formControlName="panNo" placeholder="Pan No"
+                            disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="gstNo">GST No</label>
+                        <input type="text" class="form-control" id="gstNo" formControlName="gstNo" placeholder="Gst No"
+                            disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="bankName">Bank Name</label>
+                        <input type="text" class="form-control" id="bankName" formControlName="bankName"
+                            placeholder="Bank Name" disabled />
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        <label for="accountNo">Account No</label>
+                        <input type="text" class="form-control" id="accountNo" formControlName="accountNo"
+                            placeholder="Account No" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="ifscNo">IFSC No</label>
+                        <input type="text" class="form-control" id="ifscNo" formControlName="ifscNo"
+                            placeholder="IFSC No" disabled />
+                    </div>
+                    <div class="col-sm-4">
+                        <label for="branchName">Branch Name</label>
+                        <input type="text" class="form-control" id="branchName" formControlName="branchName"
+                            placeholder="Branch Name" disabled />
+                    </div>
+                </div>
+            </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary"
+                (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        </div>
+    </ng-template>
+    <!-- End View Vendor -->
+
+    <!-- Start Delete Vendor -->
+    <ng-template #deletevendor role="document" let-modal>
+        <div class="modal-header">
+            <h5 class="modal-title mt-0">Delete Vendor</h5>
+            <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+        </div>
+        <div class="modal-body">
+            <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this vendor!!</p>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+            <button class="btn btn-primary" (click)="deleteVendor(deletevendor)">Delete Vendor</button>
+        </div>
+    </ng-template>
+    <!-- End Delete Vendor -->
+
+
+    <ng-template #errorModal role="document" let-modal>
+        <div class="modal-header">
+            <h3>Error Details</h3>
+            <!-- <button type="button" class="btn btn-warning btn-with-icon"  style="float: right;">
+            <i class="fa fa-download fa-fw"></i></button> -->
+        </div>
+        <div class="modal-body">
+            <div class="table-responsive" style="max-height:400px;padding-left: 20px;">
+                <table class="table table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th>Reason</th>
+                            <th>Vendor Name</th>
+                            <th>Address</th>
+                            <th>Country </th>
+                            <th>State </th>
+                            <th>City</th>
+                            <th>Pincode</th>
+                            <th>Contact Person Name</th>
+                            <th>Contact Person contact</th>
+                            <th>Contact Person email</th>
+                            <th>Contact Person Name</th>
+                            <th>Contact Person contact</th>
+                            <th>Contact Person email</th>
+                            <th>PAN No</th>
+                            <th>GST No</th>
+                            <th>Bank Name</th>
+                            <th>Account No</th>
+                            <th>IFSC No</th>
+                            <th>Branch Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr *ngFor="let table of dataWithErrors let index = index">
+                            <td>{{table.reason}}</td>
+                            <td>{{table.vendorName}}</td>
+                            <td>{{table.address}}</td>
+                            <td>{{table.country}}</td>
+                            <td>{{table.state}}</td>
+                            <td>{{table.city}}</td>
+                            <td>{{table.pincode}}</td>
+                            <td>{{table.contactPersonName1}}</td>
+                            <td>{{table.contactPersonContact1}}</td>
+                            <td>{{table.contactPersonEmail1}}</td>
+                            <td>{{table.contactPersonName2}}</td>
+                            <td>{{table.contactPersonContact2}}</td>
+                            <td>{{table.contactPersonEmail2}}</td>
+                            <td>{{table.panNo}}</td>
+                            <td>{{table.gstNo}}</td>
+                            <td>{{table.bankName}}</td>
+                            <td>{{table.accountNo}}</td>
+                            <td>{{table.ifscNo}}</td>
+                            <td>{{table.branchName}}</td>
+
+
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-primary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        </div>
+    </ng-template>

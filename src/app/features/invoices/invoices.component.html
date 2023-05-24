@@ -1,0 +1,985 @@
+<div class="container-fluid">
+    <div class="col-xl-12" style="padding-bottom:15px;">
+        <h1 style="color:green;text-align:center">Invoice Report</h1>
+        <br><br>
+        <form [formGroup]="orderFormGroup">
+
+            <div class="flex-box">
+                <div class="flex-item">
+                    <label for="orderId">Order ID</label>
+                    <input type="text" class="form-control" id="orderId" formControlName="orderId"
+                        placeholder="enter order ID" />
+
+                </div>
+                <div class="flex-item">
+                    <label for="orderId">Select Invoice Type</label>
+                    <select id="saleOrpurchase" class="form-select" formControlName="saleOrpurchase">
+                        <option value="default"></option>
+                        <option value="sale invoice">Customer Invoice </option>
+                        <option value="purchase invoice">Vendor Invoice </option>
+                    </select>
+                </div>
+                <div class="flex-item">
+                    <button class="btn btn-primary  button-in" (click)="onSubmit();" [disabled]="orderFormGroup.invalid"
+                        style="padding: 8px !important;">Search</button>
+                </div>
+                <!-- <div
+                    *ngIf="res==1 && this.invoiceOrder[0].tbl_order.poValue!=this.invoiceOrder[0].tbl_order.receivedAmount">
+                    <button type="button" class="btn btn-success button-in waves-effect waves-light btn-add"
+                        (click)="openCreateInvoiceModal(createSaleInvoice)" style="padding: 8px !important;">
+                        <i class="mdi mdi-plus me-1"></i>
+                        Create Customer  Invoice
+                    </button>
+                </div> -->
+
+                <!-- <div
+                    *ngIf="res==2 && this.invoiceOrder[0].tbl_order.poPurchaseValue!=this.invoiceOrder[0].tbl_order.purchaseRecievedAmount">
+                    <button type="button" class="btn btn-success  button-in waves-effect waves-light btn-add"
+                        (click)="openCreatePurchaseInvoiceModal(AddPurchaseInvoicedata)"
+                        style="padding: 8px !important;">
+                        <i class="mdi mdi-plus me-1"></i>
+                        Create Vendor Invoice
+                    </button>
+                </div> -->
+
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="container-fluid">
+    <div class="col-xl-12">
+        <easy-grid [dataArray]="InvoiceArray" [dataColumns]="Columns1" [primaryKey]="'id'" [srNoEnable]="true"
+            [headerBgColor]="LightBlue1" [isColumnSelectionEnabled]="false" [actionsArray]="Actions1"
+            [isSearchEnabled]="true" [isActionsEnabled]="true"
+            (onActionPerformed)="ViewInvoiceFull($event, viewFullInvoice)"
+            (onActionPerformed)="addSaleInvoicePayment($event,addPaymentData)"
+            (onActionPerformed)="addPurchaseInvoicePayment($event,addPurchasePaymentData)"
+            (onActionPerformed)="ViewPurchaseInvoiceFull($event, viewPurchaseFullInvoice)"
+            (onActionPerformed)="EditPurchaseElement($event, editPurchaseInvoice)"
+            (onActionPerformed)="EditSaleElement($event, editSaleInvoice)"
+            (onActionPerformed)="deletePurchaseElement($event, deletePurchesInvoice)"
+            (onActionPerformed)="deleteSaleElement($event, deleteSaleInvoice)">
+        </easy-grid>
+    </div>
+</div>
+
+<!-- addPaymentData -->
+<!-- ------------- -->
+
+<ng-template #addPaymentData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Payment Invoice Customer</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="SalePaymentFormGroup">
+            <hr class="hr-line">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentDate">Payment Date</label>
+                    <input type="date" formControlName="paymentDate" class="form-control rounded_" id="paymentDate"
+                        placeholder="payment Date"  />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="paymentMethod">Payment Method</label>
+                    <input type="text" formControlName="paymentMethod" class="form-control rounded_" id="paymentMethod"
+                        placeholder="Payment Method" />
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentReference">Payment Reference</label>
+                    <input type="text" formControlName="paymentReference" class="form-control rounded_"
+                        id="paymentReference" placeholder="Payment Reference" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="amount">Amount<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="amount" class="form-control rounded_" id="amount"
+                        placeholder="Amount"
+                        [ngClass]="{ 'is-invalid': getPaymentFormControls.amount.errors && (getPaymentFormControls.amount.dirty || getPaymentFormControls.amount.touched) }" />
+                    <div *ngIf="getPaymentFormControls.amount.errors && (getPaymentFormControls.amount.dirty || getPaymentFormControls.amount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getPaymentFormControls.amount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getPaymentFormControls.amount.errors.paymentAmount" class="error">
+                            Received Amount is {{selectedInvoiceReceivedValue}}. Trasaction amount should not be greater
+                            than the total Invoice Amount. Remaining amount is {{selectedInvoiceValue -
+                            selectedInvoiceReceivedValue}}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label for="details">Remark</label>
+                    <textarea row="2" formControlName="details" class="form-control rounded_" id="details"
+                        placeholder="details"></textarea>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmitPayment(addPaymentData);"
+            [disabled]="SalePaymentFormGroup.invalid">Submit</button>
+    </div>
+</ng-template>
+
+<!-- addPurchasePaymentData -->
+<!-- ---------------------- -->
+
+<ng-template #addPurchasePaymentData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Payment Invoice Of Vendor </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="paymentPurchaseFormGroup">
+            <hr class="hr-line">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentDate">Payment Date</label>
+                    <input type="date" formControlName="paymentDate" class="form-control rounded_" id="paymentDate"
+                        placeholder="payment Date" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="paymentMethod">Payment Method</label>
+                    <input type="text" formControlName="paymentMethod" class="form-control rounded_" id="paymentMethod"
+                        placeholder="Payment Method" />
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentReference">Payment Reference</label>
+                    <input type="text" formControlName="paymentReference" class="form-control rounded_"
+                        id="paymentReference" placeholder="Payment Reference" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="amount">Amount<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="amount" class="form-control rounded_" id="amount"
+                        placeholder="Amount"
+                        [ngClass]="{ 'is-invalid': getPaymentPurchaseFormControls.amount.errors && (getPaymentPurchaseFormControls.amount.dirty || getPaymentPurchaseFormControls.amount.touched) }" />
+                    <div *ngIf="getPaymentPurchaseFormControls.amount.errors && (getPaymentPurchaseFormControls.amount.dirty || getPaymentPurchaseFormControls.amount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getPaymentPurchaseFormControls.amount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getPaymentPurchaseFormControls.amount.errors.paymentAmount" class="error">
+                            Received Amount is {{selectedPurchaseInvoiceReceivedValue}}. Trasaction amount should not be
+                            greater than the total Invoice Amount. Remaining amount is {{selectedPurchaseInvoiceValue -
+                            selectedPurchaseInvoiceReceivedValue}}
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-sm-4">
+                        <label for="paymentCollection">Payment Collection</label>
+                        <select id="paymentCollection" class="form-select" formControlName="paymentCollection"
+                            placeholder="payment Collection">
+                            <option value="0">No</option>
+                            <option value="1">Yes</option>
+                        </select>
+                    </div> -->
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label for="details">Remark</label>
+                    <textarea row="2" formControlName="details" class="form-control rounded_" id="details"
+                        placeholder="details"></textarea>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmitPurchasePayment(addPurchasePaymentData);"
+            [disabled]="paymentPurchaseFormGroup.invalid">Submit</button>
+    </div>
+</ng-template>
+
+
+<!-- viewFullInvoice -->
+<!-- ---------------------- -->
+
+<ng-template #viewFullInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Invoice of Customer </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="invoiceFormGroup">
+            <hr class="hr-line">
+            <h5>Customer Invoice</h5>
+
+
+            <hr class="hr-line">
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <label for="invoiceRaisedDate">Invoice Date</label>
+                    <input type="date" formControlName="invoiceRaisedDate" class="form-control" id="invoiceRaisedDate"
+                        placeholder="invoiceRaisedDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="tiplInvoiceNo">TIPL Invoice No<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="tiplInvoiceNo" class="form-control rounded_" id="tiplInvoiceNo"
+                        placeholder="tiplInvoiceNo" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceSalesAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceSalesAmount" class="form-control rounded_"
+                        id="invoiceSalesAmount" placeholder="enter invoice Sales Amount" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="receivedAmount">Recieved Amount</label>
+                    <input type="text" formControlName="receivedAmount" class="form-control rounded_"
+                        id="receivedAmount" placeholder="Received Amount" />
+                </div>
+                <div class="col-sm-3">
+                    <label for="dueDate">Due Date<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" formControlName="dueDate" class="form-control rounded_" id="dueDate"
+                        placeholder="DueDate" readonly />
+
+                </div>
+
+
+            </div>
+
+
+
+
+
+            <hr class="hr-line mt-2">
+            <h5>Transaction Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive ">
+                        <thead>
+                            <tr>
+                                <th>Payment Date</th>
+                                <th>Payment Method</th>
+
+                                <th>Payment Reference</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            <!-- <tr *ngFor="let table of salePayment; let index = index"
+                                (dblclick)="makePaymentEditable = !makePaymentEditable">
+
+                                <div *ngIf="makePaymentEditable">
+                                    <td> {{table.paymentDate| date:'dd-MM-yyyy'}}<input type="text"
+                                            [value]="table.paymentDate" /> </td>
+                                </div>
+                                <div *ngIf="makePaymentEditable">
+                                    <td>{{table.paymentMethod}} <input type="text" [value]="table.paymentMethod" /></td>
+                                </div>
+                                <div *ngIf="makePaymentEditable">
+                                    <td>{{table.paymentReference}} <input type="text"
+                                            [value]="table.paymentReference" /></td>
+
+                                </div>
+                                <td>{{table.amount}} <input type="text" [value]="table.amount" /></td>
+
+                                <div *ngIf="makePaymentEditable">
+
+                                </div>
+
+                                <div *ngIf="!makePaymentEditable">
+
+                                    <td>{{table.paymentDate| date:'dd-MM-yyyy'}}</td>
+                                    <td>{{table.paymentMethod}}</td>
+                                    <td>{{table.paymentReference}}</td>
+                                    <td>{{table.amount}}</td>
+                                </div> -->
+
+
+
+                            <!-- <td>
+
+
+                                    <button type="button" class="px-3 text-primary btn-icon"
+                                        (click)="updateCustomerPayment(table.id, $event.target.value)"
+                                        ngbTooltip="Edit">
+                                        <i class="uil uil-pen font-size-18"></i>
+                                    </button>
+
+                                    <button type="button" class="px-3 text-danger btn-icon"
+                                        (click)="deleteCustomerPaymentData(index)" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+
+
+                            </tr> -->
+
+
+                            <tr *ngFor="let table of salePayment; let index = index">
+                                <td>{{table.paymentDate| date:'dd-MM-yyyy'}}</td>
+                                <td>{{table.paymentMethod}}</td>
+
+                                <td>{{table.paymentReference}}</td>
+                                <td (dblclick)="makePaymentEditable = !makePaymentEditable">
+                                    <div *ngIf="makePaymentEditable">
+                                        <input type="text" [value]="table.amount" #amount
+                                            (keyup.enter)="updateCustomerPayment(table.id, $event.target.value)" />
+                                
+                                    </div>
+
+                                    <div *ngIf="!makePaymentEditable">
+                                        {{table.amount}}
+                                    </div>
+                                </td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon"
+                                        (click)="deleteCustomerPaymentData(table.id)" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+
+
+                            </tr>
+
+
+
+
+
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+
+<!-- viewPurchaseFullInvoice -->
+<!-- ---------------------- -->
+
+
+<ng-template #viewPurchaseFullInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Invoice of Vendor</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="invoicePerchaseFormGroup">
+            <hr class="hr-line">
+
+            <h5>Vendor Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="purchaseInvoiceDate">Invoice Date</label>
+                    <input type="date" formControlName="purchaseInvoiceDate" class="form-control"
+                        id="purchaseInvoiceDate" placeholder="purchaseInvoiceDate" />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceNumber">Invoice Number</label>
+                    <input type="text" formControlName="invoiceNumber" class="form-control rounded_" id="invoiceNumber"
+                        placeholder="invoiceNumber" />
+
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="invoiceAmount">Invoice Amount</label>
+                    <input type="text" formControlName="invoiceAmount" class="form-control rounded_" id="invoiceAmount"
+                        placeholder="invoiceAmount" />
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="receivedAmount">Recieved Amount</label>
+                    <input type="text" formControlName="receivedAmount" class="form-control rounded_"
+                        id="receivedAmount" placeholder="Received Amount" />
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceRecievedDate">Invoice Due Date</label>
+                    <input type="date" formControlName="invoiceRecievedDate" class="form-control rounded_"
+                        id="invoiceRecievedDate" placeholder="invoiceRecievedDate" />
+
+                </div>
+
+            </div>
+            <hr class="hr-line mt-2">
+            <h5>Transaction Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive ">
+                        <thead>
+                            <tr>
+                                <th>Payment Date</th>
+                                <th>Payment Method</th>
+                                <!-- <th>Payment Buy</th> -->
+                                <th>Payment Reference</th>
+                                <th>Amount</th>
+                                <th>Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+
+                            <tr *ngFor="let table of purchasePayment; let index = index">
+                                <td>{{table.paymentDate| date:'dd-MM-yyyy'}}</td>
+                                <td>{{table.paymentMethod}}</td>
+                                <!-- <td>{{table.paymentBuy}}</td> -->
+                                <td>{{table.paymentReference}}</td>
+                                <td (dblclick)="makeVendorPaymentEditable = !makeVendorPaymentEditable">
+                                    <div *ngIf="makeVendorPaymentEditable">
+                                        <input type="text" [value]="table.amount" #amount
+                                        
+                                            (keyup.enter)="updateVendorPayment(table.id, $event.target.value)" />
+                                    </div>
+                                   
+                                    <div *ngIf="!makePaymentEditable">
+                                        {{table.amount}}
+
+                                    </div>
+
+                                </td>
+                                <td> <button type="button" class="px-3 text-danger btn-icon"
+                                        (click)="deleteVendorPaymentInvoice(table.id)" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+            </div>
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+
+    </div>
+</ng-template>
+
+<!-- addFullyApprovedorderData -->
+<!-- ---------------------- -->
+
+
+<ng-template #addFullyApprovedorderData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Invoice Data </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="invoiceFormGroup">
+            <hr class="hr-line">
+            <h5>Customer Invoice</h5>
+
+            <hr class="hr-line">
+
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <label for="invoiceRaisedDate">Invoice Date</label>
+                    <input type="date" formControlName="invoiceRaisedDate" class="form-control" id="invoiceRaisedDate"
+                        placeholder="invoiceRaisedDate"  />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="tiplInvoiceNo">TIPL Invoice No<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="tiplInvoiceNo" class="form-control rounded_" id="tiplInvoiceNo"
+                        placeholder="TIPL Invoice No"
+                        [ngClass]="{ 'is-invalid': getInvoiceFormControls.tiplInvoiceNo.errors && (getInvoiceFormControls.tiplInvoiceNo.dirty || getInvoiceFormControls.tiplInvoiceNo.touched) }" />
+                    <div *ngIf="getInvoiceFormControls.tiplInvoiceNo.errors && (getInvoiceFormControls.tiplInvoiceNo.dirty || getInvoiceFormControls.tiplInvoiceNo.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getInvoiceFormControls.tiplInvoiceNo.errors.required" class="error">
+                            TIPL Invoice No is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceSalesAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceSalesAmount" class="form-control rounded_"
+                        id="invoiceSalesAmount" placeholder="enter invoice Sales Amount"
+                        [ngClass]="{ 'is-invalid': getInvoiceFormControls.invoiceSalesAmount.errors && (getInvoiceFormControls.invoiceSalesAmount.dirty || getInvoiceFormControls.invoiceSalesAmount.touched) }" />
+                    <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors && (getInvoiceFormControls.invoiceSalesAmount.dirty || getInvoiceFormControls.invoiceSalesAmount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors.invAmount" class="error">
+                            Received Amount is {{selectedPoPurchaseReceivedValue}}. Invoice amount should not be greater
+                            than
+                            the total PO value. Remaining amount is {{selectedPoPurchaseValue -
+                            selectedPoPurchaseReceivedValue}}
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="poValue">PO Value</label>
+                    <input type="number" formControlName="poValue" class="form-control rounded_" id="poValue"
+                        placeholder="poValue" readonly />
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="dueDate">Due Date<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" formControlName="dueDate" class="form-control rounded_" id="dueDate"
+                        placeholder="dueDate" readonly />
+
+                </div>
+
+            </div>
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmitSaleInvoice(addFullyApprovedorderData);"
+            [disabled]="invoiceFormGroup.invalid">Create</button>
+    </div>
+</ng-template>
+
+
+<!-- AddPurchaseInvoicedata -->
+<!-- ---------------------- -->
+
+
+<ng-template #AddPurchaseInvoicedata role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Invoice Data </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="invoicePerchaseFormGroup">
+
+            <hr class="hr-line mt-2">
+            <h5>Vendor Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="purchaseInvoiceDate">Invoice Date</label>
+                    <input type="date" formControlName="purchaseInvoiceDate" class="form-control"
+                        id="purchaseInvoiceDate" placeholder="purchaseInvoiceDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceNumber">Invoice Number</label>
+                    <input type="text" formControlName="invoiceNumber" class="form-control rounded_" id="invoiceNumber"
+                        placeholder="invoiceNumber" />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceAmount" class="form-control rounded_" id="invoiceAmount"
+                        placeholder="enter invoice Purchase Amount"
+                        [ngClass]="{ 'is-invalid': getInvoicePerchaseFormControls.invoiceAmount.errors && (getInvoicePerchaseFormControls.invoiceAmount.dirty || getInvoicePerchaseFormControls.invoiceAmount.touched) }" />
+                    <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors && (getInvoicePerchaseFormControls.invoiceAmount.dirty || getInvoicePerchaseFormControls.invoiceAmount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors.invAmount" class="error">
+                            Received Amount is {{selectedPoPurchaseReceivedValue}}. Invoice amount should not be greater
+                            than the total PO Purchase value. Remaining amount is {{selectedPoPurchaseValue -
+                            selectedPoPurchaseReceivedValue}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label for="poPurchaseValue">Vendor PO Value</label>
+                    <input type="number" formControlName="poPurchaseValue" class="form-control rounded_"
+                        id="poPurchaseValue" placeholder="poPurchaseValue" readonly />
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="invoiceRecievedDate">Invoice Due Date</label>
+                    <input type="date" formControlName="invoiceRecievedDate" class="form-control rounded_"
+                        id="invoiceRecievedDate" placeholder="invoiceRecievedDate" readonly />
+
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmitPurchaseInvoice(AddPurchaseInvoicedata);"
+            [disabled]="invoicePerchaseFormGroup.invalid">create</button>
+    </div>
+</ng-template>
+
+<!-- Start Delete Purchase Invoice -->
+<ng-template #deletePurchesInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Vendor Invoice</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this Vendor Invoice!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deletePurchaseInvoice(deletePurchesInvoice)">Delete Vendor
+            Invoice</button>
+    </div>
+</ng-template>
+<!-- End Delete Product -->
+
+<!-- Start Delete Sale Invoice -->
+<ng-template #deleteSaleInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Customer Invoice</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this Customer Invoice!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteSalesInvoice(deleteSaleInvoice)">Delete Customer Invoice</button>
+    </div>
+</ng-template>
+<!-- End Delete invoice -->
+
+<!-- ----------------------------------------------------------------- -->
+<!-- ----------------edit Purchase Invoice  ------------------------------>
+
+<ng-template #editPurchaseInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Update Vendor Invoice</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+
+        <form [formGroup]="invoicePerchaseFormGroup">
+
+            <hr class="hr-line mt-2">
+            <h5> Vendor Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="purchaseInvoiceDate">Invoice Date</label>
+                    <input type="date" formControlName="purchaseInvoiceDate" class="form-control"
+                        id="purchaseInvoiceDate" placeholder="purchaseInvoiceDate" />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceNumber">Invoice Number</label>
+                    <input type="text" formControlName="invoiceNumber" class="form-control rounded_" id="invoiceNumber"
+                        placeholder="invoiceNumber" readonly/>
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceAmount" class="form-control rounded_" id="invoiceAmount"
+                        placeholder="enter invoice Purchase Amount"
+                        [ngClass]="{ 'is-invalid': getInvoicePerchaseFormControls.invoiceAmount.errors && (getInvoicePerchaseFormControls.invoiceAmount.dirty || getInvoicePerchaseFormControls.invoiceAmount.touched) }" />
+                    <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors && (getInvoicePerchaseFormControls.invoiceAmount.dirty || getInvoicePerchaseFormControls.invoiceAmount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getInvoicePerchaseFormControls.invoiceAmount.errors.invAmount" class="error">
+                            Received Amount is {{selectedPoPurchaseReceivedValue}}. Invoice amount should not be greater
+                            than the total PO Purchase value. Remaining amount is {{selectedPoPurchaseValue -
+                            selectedPoPurchaseReceivedValue}}
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-3">
+                    <label for="poPurchaseValue">Vendor PO Value</label>
+                    <input type="number" formControlName="poPurchaseValue" class="form-control rounded_"
+                        id="poPurchaseValue" placeholder="poPurchaseValue" readonly />
+                </div>
+
+                <div class="col-sm-3">
+                    <label for="invoiceRecievedDate">Invoice Due Date</label>
+                    <input type="date" formControlName="invoiceRecievedDate" class="form-control rounded_"
+                        id="invoiceRecievedDate" placeholder="invoiceRecievedDate" />
+
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updatepurchaseInvoice(editPurchaseInvoice);">Update Invoice</button>
+    </div>
+</ng-template>
+
+<!-- ----------------------------------------------------------------- -->
+<!-- ----------------edit sale Invoice  ------------------------------>
+
+<ng-template #editSaleInvoice role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Update Invoice of Customer </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="invoiceFormGroup">
+            <hr class="hr-line">
+            <h5>Customer Invoice</h5>
+
+
+            <hr class="hr-line">
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <label for="invoiceRaisedDate">Invoice Date</label>
+                    <input type="date" formControlName="invoiceRaisedDate" class="form-control" id="invoiceRaisedDate"
+                        placeholder="invoiceRaisedDate" />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="tiplInvoiceNo">TIPL Invoice No<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="tiplInvoiceNo" class="form-control rounded_" id="tiplInvoiceNo"
+                        placeholder="tiplInvoiceNo" />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceSalesAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceSalesAmount" class="form-control rounded_"
+                        id="invoiceSalesAmount" placeholder="enter invoice Sales Amount"
+                        [ngClass]="{ 'is-invalid': getInvoiceFormControls.invoiceSalesAmount.errors && (getInvoiceFormControls.invoiceSalesAmount.dirty || getInvoiceFormControls.invoiceSalesAmount.touched) }" />
+                    <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors && (getInvoiceFormControls.invoiceSalesAmount.dirty || getInvoiceFormControls.invoiceSalesAmount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getInvoiceFormControls.invoiceSalesAmount.errors.invAmount" class="error">
+                            Received Amount is {{selectedPoReceivedValue}}. Invoice amount should not be greater than
+                            the total PO value. Remaining amount is {{selectedPoValue - selectedPoReceivedValue }}
+                        </div>
+                    </div>
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="poValue">PO Value</label>
+                    <input type="number" formControlName="poValue" class="form-control rounded_" id="poValue"
+                        placeholder="poValue" readonly />
+                </div>
+                <div class="col-sm-3">
+                    <label for="dueDate">Due Date<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" formControlName="dueDate" class="form-control rounded_" id="dueDate"
+                        placeholder="DueDate" />
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updatesaleInvoice(editSaleInvoice)">Update Invoice</button>
+    </div>
+</ng-template>
+
+
+<!-- -----------------------edit customer invoice payment ----------------------------- -->
+<!-- ---------------------------------------------------------------------------------- -->
+
+<ng-template #editCustomerPaymentData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Payment Invoice Customer</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="SalePaymentFormGroup">
+            <hr class="hr-line">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentDate">Payment Date</label>
+                    <input type="date" formControlName="paymentDate" class="form-control rounded_" id="paymentDate"
+                        placeholder="payment Date" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="paymentMethod">Payment Method</label>
+                    <input type="text" formControlName="paymentMethod" class="form-control rounded_" id="paymentMethod"
+                        placeholder="Payment Method" />
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentReference">Payment Reference</label>
+                    <input type="text" formControlName="paymentReference" class="form-control rounded_"
+                        id="paymentReference" placeholder="Payment Reference" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="amount">Amount<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="amount" class="form-control rounded_" id="amount"
+                        placeholder="Amount"
+                        [ngClass]="{ 'is-invalid': getPaymentFormControls.amount.errors && (getPaymentFormControls.amount.dirty || getPaymentFormControls.amount.touched) }" />
+                    <div *ngIf="getPaymentFormControls.amount.errors && (getPaymentFormControls.amount.dirty || getPaymentFormControls.amount.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getPaymentFormControls.amount.errors.required" class="error">
+                            Invoice amount is required
+                        </div>
+                        <div *ngIf="getPaymentFormControls.amount.errors.paymentAmount" class="error">
+                            Received Amount is {{selectedInvoiceReceivedValue}}. Trasaction amount should not be greater
+                            than the total Invoice Amount. Remaining amount is {{selectedInvoiceValue -
+                            selectedInvoiceReceivedValue}}
+                        </div>
+                    </div>
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label for="details">Remark</label>
+                    <textarea row="2" formControlName="details" class="form-control rounded_" id="details"
+                        placeholder="details"></textarea>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="UpdatecustomerPayment(editCustomerPaymentData);">update</button>
+    </div>
+</ng-template>
+
+
+<!-- -------viewCustomerPaymentData------------ -->
+<!-- ------------------------------------------ -->
+
+
+<ng-template #viewCustomerPaymentData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0"> View Payment Invoice Customer</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="SalePaymentFormGroup">
+            <hr class="hr-line">
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentDate">Payment Date</label>
+                    <input type="date" formControlName="paymentDate" class="form-control rounded_" id="paymentDate"
+                        placeholder="payment Date"  />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="paymentMethod">Payment Method</label>
+                    <input type="text" formControlName="paymentMethod" class="form-control rounded_" id="paymentMethod"
+                        placeholder="Payment Method" />
+
+                </div>
+
+            </div>
+
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="paymentReference">Payment Reference</label>
+                    <input type="text" formControlName="paymentReference" class="form-control rounded_"
+                        id="paymentReference" placeholder="Payment Reference" />
+
+                </div>
+                <div class="col-sm-6">
+                    <label for="amount">Amount<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="amount" class="form-control rounded_" id="amount"
+                        placeholder="Amount">
+
+
+                </div>
+
+            </div>
+            <div class="row">
+
+                <div class="col-sm-6">
+                    <label for="details">Remark</label>
+                    <textarea row="2" formControlName="details" class="form-control rounded_" id="details"
+                        placeholder="details"></textarea>
+                </div>
+
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>

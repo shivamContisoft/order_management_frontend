@@ -1,0 +1,176 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Business Category</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddBusinessCategoryModal(createbusinesscategory)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Business Category
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Description</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of businessCategorys; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.categoryName}}
+                                    </td>
+                                    <td>
+                                        {{table.description}}
+                                    </td>
+                                    <td>
+                                        <!-- View Icon -->
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewBusinessCategoryModal(table.id, viewbusinesscategory)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                        <!-- Edit Icon -->
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditBusinessCategoryModal(table.id, editbusinesscategory)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                        <!-- Delete Icon -->
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteBusinessCategoryModal(deletebusinesscategory)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End table -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Business Category -->
+<ng-template #createbusinesscategory role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Business Category <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="businessCategoryFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="categoryName">Business Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="categoryName" class="form-control rounded_" id="categoryName"
+                        placeholder="Business Name" [ngClass]="{ 'is-invalid': getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched) }" required>
+                    <div *ngIf="getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getBusinessCategoryFormControls.categoryName.errors" class="error">
+                            Business Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createbusinesscategory)">Save Business Category</button>
+    </div>
+</ng-template>
+<!-- End Add Business Category -->
+
+<!-- Start Edit Business Category -->
+<ng-template #editbusinesscategory role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit Business Category <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="businessCategoryFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="categoryName">Business Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="categoryName" class="form-control rounded_" id="categoryName"
+                        placeholder="Business Name" [ngClass]="{ 'is-invalid': getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched) }" required>
+                    <div *ngIf="getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getBusinessCategoryFormControls.categoryName.errors" class="error">
+                            Business Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateBusinessCategory(editbusinesscategory)">Save Business Category</button>
+    </div>
+</ng-template>
+<!-- End Edit Business Category -->
+
+<!-- Start View Business Category -->
+<ng-template #viewbusinesscategory role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Business Category <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="businessCategoryFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="categoryName">Business Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="categoryName" class="form-control rounded_" id="categoryName"
+                        placeholder="Business Name" [ngClass]="{ 'is-invalid': getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched) }" disabled required>
+                    <div *ngIf="getBusinessCategoryFormControls.categoryName.errors && (getBusinessCategoryFormControls.categoryName.dirty || getBusinessCategoryFormControls.categoryName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getBusinessCategoryFormControls.categoryName.errors" class="error">
+                            Business Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="description">Description</label>
+                    <input type="text" class="form-control" id="description" formControlName="description" placeholder="Description" disabled/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- End View Business Category -->
+
+<!-- Start Delete Oem -->
+<ng-template #deletebusinesscategory role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Business Category</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this Business Category!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteBusinessCategory(deletebusinesscategory)">Delete Business Category</button>
+    </div>
+</ng-template>
+<!-- End Delete Oem -->

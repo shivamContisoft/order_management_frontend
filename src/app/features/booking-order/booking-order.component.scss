@@ -1,0 +1,281 @@
+.btn-add {
+    float: right;
+    margin-top: 10px;
+    margin-right: 21px;
+}
+
+.page-title {
+    float: left;
+    margin-top: 10px;
+    margin-left: 33px;
+    font-size: 20px;
+}
+
+
+.modal-title {
+  padding-left: 18px;
+}
+
+.btn-icon {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.hr-line {
+    border: solid red;
+}
+
+.heading-top {
+    margin-top: 10px;
+}
+
+.sub-heading-top {
+    margin-top: 10px;
+    margin-left: 10px;
+}
+label{
+    position: relative;
+    top: 7px;
+}
+#Div1 {
+    display: none;
+}
+#Div2 {
+    display: none;
+}
+#Div3 {
+    display: none;
+}
+#Div4 {
+    display: none;
+}
+#Div5 {
+    display: none;
+}
+#Div6 {
+    display: none;
+}
+#Div7 {
+    display: none;
+}
+#Div8 {
+    display: none;
+}
+#Div9 {
+    display: none;
+}
+#Div10 {
+    display: none;
+}
+#Div11 {
+    display: none;
+}
+#Div12 {
+    display: none;
+}
+
+
+.hidden{
+  visibility: hidden;
+}
+
+
+
+
+.progress-step .step-count:before{display: none !important;}
+
+.progress-step .step-count{padding: 5px !important; height: 50px !important; width: 50px !important; }
+.is-active .step-count{background-color: #003366 !important; color: #fff;}
+.is-reject .step-count{background-color: #f00a0a !important; color: #fff;}
+
+
+.progress-bar {
+    width: 100%;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(20px, 1fr));
+    background: none !important;
+  }
+  
+  .progress-step {
+    text-align: center;
+    position: relative;
+  }
+  .progress-step:before, .progress-step:after {
+    // background-color: #003466;
+    content: "";
+    height: 2px;
+    position: absolute;
+    z-index: 0;
+    top: 26px;
+    color: #fff;
+  }
+  .progress-step:after {
+    left: 58%;
+    width: 83%;
+    z-index: 1;
+  }
+  .progress-step:last-of-type.is-active:after {
+    background-color: #c0a359;
+  }
+  @media screen and (min-width: 640px) {
+    .progress-step:first-of-type:before {
+      right: 50%;
+      width: 50%;
+    }
+  }
+  @media screen and (max-width: 640px) {
+    .progress-step:first-of-type:before, .progress-step:last-of-type:after {
+      background-color: #003366 !important;
+    }
+  }
+  .progress-step:last-of-type:after {
+    left: 50%;
+    width: 50%;
+  }
+  .progress-step .step-count {
+    background-color: #e1e1e0;
+    height: 30px;
+    width: 30px;
+    margin: 0 auto;
+    border-radius: 50%;
+    color: white;
+    line-height: 30px;
+    z-index: 100;
+    border: 7px solid #CCC;
+    font-size: 0.8rem;
+    font-weight: 500;
+  }
+  // .progress-step .step-count:before {
+  //   counter-increment: step-count;
+  //   content: counter(step-count);
+  // }
+  .progress-step.is-active .step-description {
+    font-weight: 500;
+  }
+
+ 
+
+
+  .progress-step.is-active:after {
+    background-color: #003366;
+    color: #fff;
+  }
+  .progress-step.is-active ~ .progress-step .step-count {
+    background-color: #e1e1e0;
+    color: #fff;
+  }
+  .progress-step.is-active ~ .progress-step:after {
+    // background-color: #e1e1e0;
+    color: #003366;
+  }
+  
+
+
+  .progress-step.is-reject .step-description {
+    font-weight: 500;
+  }
+  // .progress-step.is-reject:after {
+  //   background-color: #e1e1e0;
+  //   color: #f00a0a;
+  // }
+  // .progress-step.is-reject ~ .progress-step .step-count {
+  //   background-color: #e1e1e0;
+  //   color: #f00a0a;
+  // }
+  // .progress-step.is-reject ~ .progress-step:after {
+  //   background-color: #e1e1e0;
+  //   color: #f00a0a;
+  // }
+  .step-description {
+    font-size: 0.8rem;
+    color: #003366;
+     margin-top: 7px;
+     font-weight: 500;
+  }
+  
+
+
+  .circles{
+  height: 0.938em;
+  width: 0.938em;
+  border: 0.188em solid #000;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.active{
+    background-color:#ffa500;
+}
+
+.circle-desc-active{
+font-weight: bold;
+}
+
+.bar{
+  width: 16%;
+  height: 0.063em;
+  margin-bottom:0.469em;
+  border: 0.031em solid #000;
+  color:#000;
+  background-color:#000;
+  display: inline-block;
+  text-align:center;
+  margin:"0 auto";
+}
+
+.container{
+  min-width:320px;
+  margin: "0px auto";
+  text-align: center;
+}
+
+.circle-desc{
+ position: absolute;
+ top:5.000em;
+ font-size: 1.125em;
+ width: auto;
+ max-width:9.375em;
+ margin-left:-0.750em;
+}
+
+@media only screen and (max-width: 320px){
+   body {
+     font-size:20%
+  }
+} 
+
+/*extra small devices*/
+@media only screen and (max-width: 600px){
+   body {
+     font-size:40%
+  }
+} 
+
+/* Small devices (portrait tablets and large phones, 600px and up) */
+@media only screen and (min-width: 600px) {
+   body {
+     font-size:60%
+  }
+} 
+
+/* Medium devices (landscape tablets, 768px and up) */
+@media only screen and (min-width: 768px) {
+  body {
+     font-size:80%
+  }
+} 
+
+/* Large devices (laptops/desktops, 992px and up) */
+@media only screen and (min-width: 992px) {
+  body {
+     font-size:100%
+  }
+} 
+
+/* Extra large devices (large laptops and desktops, 1200px and up) */
+@media only screen and (min-width: 1200px) {
+   body {
+     font-size:120%
+  }
+}

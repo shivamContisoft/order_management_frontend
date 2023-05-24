@@ -1,0 +1,1400 @@
+<div class="container-fluid">
+    <!-- start page title -->
+    <app-page-title title="Booking Order" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+    <!-- end page title -->
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row" *ngIf=" userAccountType==1 ">
+                    <div class="col-sm-6">
+                        <!-- <span class="page-title"><b>Booking Order</b></span> -->
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="downloadXlOrderList()"><i class="bi bi-download"></i> Download</button>
+                    </div>
+                </div>
+                <div class="row" *ngIf=" userAccountType==3 ">
+                    <div class="col-sm-6">
+                        <!-- <span class="page-title"><b>Booking Order</b></span> -->
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="downloadXlBDMOrderList()"><i class="bi bi-download"></i> Download</button>
+                    </div>
+                </div>
+
+                <div class="row" *ngIf="userAccountType==2 ">
+                    <div class="col-sm-6">
+                        <!-- <span class="page-title"><b>Booking Order</b></span> -->
+                    </div>
+                    <div class="col-sm-6">
+
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddOrderModal(createorder)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Order
+                        </button>
+                    </div>
+                </div>
+
+                <div class="card-body" *ngIf="userAccountType==2 ">
+                    <easy-grid [dataArray]="OrdersArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" (onActionPerformed)="viewElement($event, viewbookorder)"
+                        (onActionPerformed)="viewApprovalFms($event, viewApprovalOrderFMS)"
+                        (onActionPerformed)="viewApprovalNonFms($event, viewApprovalOrderNONFMS)"
+                        (onActionPerformed)="deleteFullOrder($event,deleteFullOrderbyId)">
+                    </easy-grid>
+                </div>
+                <div class="card-body" *ngIf=" userAccountType==1 ">
+                    <easy-grid [dataArray]="OrdersArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                        [isActionsEnabled]="true" [isExportEnabled]="false"
+                        (onActionPerformed)="viewElement($event, viewbookorder)"
+                        (onActionPerformed)="viewApprovalFms($event, viewApprovalOrderFMS)"
+                        (onActionPerformed)="viewApprovalNonFms($event, viewApprovalOrderNONFMS)"
+                        (onActionPerformed)="deleteFullOrder($event,deleteFullOrderbyId)">
+
+                    </easy-grid>
+                </div>
+            </div>
+            <div class="row" *ngIf="userAccountType==3 ">
+                <div class="card">
+                    <easy-grid [dataArray]="BDMOrdersArray" [dataColumns]="Columns1" [primaryKey]="'id'"
+                        [srNoEnable]="true" [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false"
+                        [actionsArray]="Actions" [isActionsEnabled]="true" [isExportEnabled]="false"
+                        (onActionPerformed)="viewElement($event, viewbookorder)"
+                        (onActionPerformed)="viewApprovalFms($event, viewApprovalOrderFMS)"
+                        (onActionPerformed)="viewApprovalNonFms($event, viewApprovalOrderNONFMS)"
+                        (onActionPerformed)="deleteFullOrder($event,deleteFullOrderbyId)">
+                    </easy-grid>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+
+<!-- Start Add Order -->
+<ng-template #createorder role="document" let-modal>
+    <div class="modal-header">
+        <img src="assets/images/Triangular_Logo.png" alt="" height="50">
+
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div>
+        <h6 class="modal-title"> <span class="mandatory" style="color:red">* Fields are Mandatory</span>
+        </h6>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="orderFormGroup">
+            <hr class="hr-line">
+            <h5>General</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="entity" id="entity"
+                        (change)="getCustomer($event.target.value);"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.entity.errors && (getOrderFormControls.entity.dirty || getOrderFormControls.entity.touched) }">
+                        <option value="default">Select Entity</option>
+                        <option *ngFor="let item of Entitys" value="{{item.id}}">{{item.entityName}}</option>
+                    </select>
+
+                    <div *ngIf="getOrderFormControls.entity.errors && (getOrderFormControls.entity.dirty || getOrderFormControls.entity.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.entity.errors" class="error">
+                            Please select entity
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyName">Company Name<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="companyName" id="companyName"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.companyName.errors && (getOrderFormControls.companyName.dirty || getOrderFormControls.companyName.touched) }">
+                        <option value="default"></option>
+                        <option value="{{item.id}}" *ngFor="let item of Customers">{{item.customerName}}</option>
+                    </select>
+                    <div *ngIf="getOrderFormControls.companyName.errors && (getOrderFormControls.companyName.dirty || getOrderFormControls.companyName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyName.errors" class="error">
+                            Please select Company Name
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyPaymentTerms">Company Payment Terms<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="companyPaymentTerms" class="form-control rounded_"
+                        id="companyPaymentTerms" placeholder="Company Payment Terms"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Company Payment Terms is required
+                        </div>
+                    </div>
+
+                </div>
+                <!-- <div class="col-sm-4 mt-2">
+                    <label for="oem">OEM <span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="oem" id="oem"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.oem.errors && (getOrderFormControls.oem.dirty || getOrderFormControls.oem.touched) }">
+                        <option value="default">Select OEM</option>
+                        <option value="{{item.id}}" *ngFor="let item of Oems">{{item.oemName}}</option>
+                    </select>
+                    <div *ngIf="getOrderFormControls.oem.errors && (getOrderFormControls.oem.dirty || getOrderFormControls.oem.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.oem.errors" class="error">
+                            Please select OEM
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-2">
+                    <label for="oemDealerId">OEM Dealer Id</label>
+                    <input type="text" formControlName="oemDealerId" class="form-control rounded_" id="oemDealerId"
+                        placeholder="OEM Dealer Id" />
+                   
+                </div> -->
+
+
+
+                <!-- <hr class="hr-line mt-2">
+                <h5>BDM Info</h5>
+                <hr class="hr-line">
+                <div class="col-sm-4">
+                    <label for="businessUnit">Business Unit <span class="mandatory" style="color: red;">*</span></label>
+                    
+                    <select class="form-select" formControlName="businessUnit"
+                        (change)="getBdmById($event.target.value)"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.businessUnit.errors && (getOrderFormControls.businessUnit.dirty || getOrderFormControls.businessUnit.touched) }">
+                        <option value="default">Select Business Unit</option>
+                        <option *ngFor="let item of businessUnit" value="{{item.id}}">{{item.categoryName}}</option>
+                    </select>
+                    <div *ngIf="getOrderFormControls.businessUnit.errors && (getOrderFormControls.businessUnit.dirty || getOrderFormControls.businessUnit.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.businessUnit.errors" class="error">
+                            Please select Business Unit
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4"
+                    *ngIf="userAccountType == 2 && ( getOrderFormControls.businessUnit.value==4 || getOrderFormControls.businessUnit.value==2 || getOrderFormControls.businessUnit.value==8)">
+                    
+
+                    <label for="bdm">BDM <span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="bdm" id="bdm">
+                        <option value="default">Select BDM</option>
+                        <option *ngFor="let item of BdmsData" value="{{item.id}}">{{item.firstName}} {{item.lastName}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-sm-4"
+                    *ngIf="userAccountType == 2 && ( getOrderFormControls.businessUnit.value==4 || getOrderFormControls.businessUnit.value==2 || getOrderFormControls.businessUnit.value==8)">
+                    <label for="bdmPercentage">BDM Percentage<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" formControlName="bdmPercentage" max=100 class="form-control rounded_"
+                        id="bdmPercentage" placeholder="BDM Percentage"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.bdmPercentage.errors && (getOrderFormControls.bdmPercentage.dirty || getOrderFormControls.bdmPercentage.touched) }">
+                    <div *ngIf="getOrderFormControls.bdmPercentage.errors && (getOrderFormControls.bdmPercentage.dirty || getOrderFormControls.bdmPercentage.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.bdmPercentage.errors" class="error">
+                            BDM Percentage is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4" *ngIf="userAccountType == 1">
+                    <label for="bdmPercentage">BDM Percentage<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" pattern="[0-9]+(\.[0-9]{1,2})?%?" formControlName="bdmPercentage"
+                        class="form-control rounded_" id="bdmPercentage" placeholder="BDM Percentage" />
+                  
+                </div> -->
+
+                <hr class="hr-line mt-2">
+                <h5>Product Description</h5>
+                <hr class="hr-line">
+
+
+                <div class="col-sm-4">
+                    <label for="orderType">Order Type<span class="mandatory" style="color: red;">*</span></label>
+
+                    <select class="form-select" formControlName="orderType"
+                        (change)="getOrderType($event.target.value);"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.orderType.errors && (getOrderFormControls.orderType.dirty || getOrderFormControls.orderType.touched) }">
+                        <option value="">Select Order Type</option>
+                        <option value="1">Annuity</option>
+                        <option value="2">Non-Annuity</option>
+                    </select>
+                    <div *ngIf="getOrderFormControls.orderType.errors && (getOrderFormControls.orderType.dirty || getOrderFormControls.orderType.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.orderType.errors" class="error">
+                            OrderType is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4">
+                    <label for="poNo">PO No<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="poNo" formControlName="poNo" placeholder="PO No"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.poNo.errors && (getOrderFormControls.poNo.dirty || getOrderFormControls.poNo.touched) }">
+                    <div *ngIf="getOrderFormControls.poNo.errors && (getOrderFormControls.poNo.dirty || getOrderFormControls.poNo.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.poNo.errors" class="error">
+                            Po No is required
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 mt-2">
+                    <label for="poDate">Date Of PO<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" class="form-control" id="poDate" formControlName="poDate"
+                        placeholder="Date Of PO"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.poDate.errors && (getOrderFormControls.poDate.dirty || getOrderFormControls.poDate.touched) }">
+                    <div *ngIf="getOrderFormControls.poDate.errors && (getOrderFormControls.poDate.dirty || getOrderFormControls.poDate.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.poDate.errors.required" class="error">
+                            Date is required
+                        </div>
+                        <div *ngIf="getOrderFormControls.poDate.errors.pastDate" class="error">
+                            Please select a current or past date
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-sm-4 mt-2">
+                    <label for="duration">Duration</label>
+                    <input type="text" class="form-control" id="duration" formControlName="duration"
+                        placeholder="Duration">
+                </div>
+
+                <hr class="hr-line mt-2">
+                <h5>Product Details</h5>
+                <hr class="hr-line">
+
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables"
+                        formArrayName="addOnOem">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Product Name</th>
+                                <th>Product Description</th>
+                                <th>Total EUP</th>
+                                <th>bussiness Unit</th>
+                                <th>BDM</th>
+                                <th>BDM Percentage</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of getOemFormArray.controls; let index = index;" formGroupName='index'>
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.value.productType}}</td>
+                                <td>{{table.value.productDescription}}</td>
+                                <td>{{table.value.poValue}}</td>
+                                <td>{{table.value.businessUnit}}</td>
+                                <td>{{table.value.bdm}}</td>
+                                <td>{{table.value.bdmPercentage}}</td>
+                                <!-- <td>{{table.value.poPurchaseValue}}</td> -->
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon"
+                                        (click)="deleteProductData(index)" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+
+
+
+
+
+
+
+                <hr class="hr-line mt-2">
+                <div class="col-sm-2 mt-2">
+                    <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add OEM"
+                        (click)="openOemModal(createOEM)">
+                </div>
+                <!-- <div class="col-sm-6">
+                    <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                        (click)="openOemModal(createOEM))">
+                        <i class="mdi mdi-plus me-1"></i>
+                        Add Order
+                    </button>
+                </div> -->
+
+
+
+
+
+                <!-- <div class="col-sm-4" *ngIf="userAccountType == 2 ">
+                    <label for="businessUnit">Business Unit <span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="businessUnit"
+                        (change)="getBdmById($event.target.value)" 
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.businessUnit.errors && (getOrderFormControls.businessUnit.dirty || getOrderFormControls.businessUnit.touched) }">
+                        <option value="default">Select Business Unit</option>
+                        <option value="1">DN</option>
+                        <option value="2">EUC</option>
+                    </select>
+                    <div *ngIf="getOrderFormControls.businessUnit.errors && (getOrderFormControls.businessUnit.dirty || getOrderFormControls.businessUnit.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.businessUnit.errors" class="error">
+                            Please select Business Unit
+                        </div>
+                    </div>
+                </div> -->
+
+
+
+
+
+
+
+                <hr class="hr-line mt-2">
+                <h5>Vendor</h5>
+                <hr class="hr-line">
+                <!-- Start Product Selection for Purchase -->
+
+                <div class="col-sm-6">
+                    <label for="externalCost">External Cost out</label>
+                    <input type="text" name="externalCost" class="form-control" id="externalCost"
+                        formControlName="externalCost" placeholder="External Cost">
+                </div>
+
+                <!-- Start Here is the Add on Product + Attach + Service //for Purchase -->
+                <div class="col-sm-4" id="Div4">
+                    <label for="purchaseProductValue">Vendor Product Value :<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductValue" readonly
+                        placeholder="Enter PO Product Value... " (change)="purchasevaluesMatchwithservices()"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.purchaseProductValue.errors && (getOrderFormControls.purchaseProductValue.dirty || getOrderFormControls.purchaseProductValue.touched) }">
+                    <div *ngIf="getOrderFormControls.purchaseProductValue.errors && (getOrderFormControls.purchaseProductValue.dirty || getOrderFormControls.purchaseProductValue.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.purchaseProductValue.errors" class="error">
+                            Vendor Product Value is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4" id="Div5">
+                    <label for="purchaseProductAttachValue">Vendor Attach Value :<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductAttachValue"
+                        readonly placeholder="Enter PO Attach Value..." (change)="purchasevaluesMatchwithservices()"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.purchaseProductAttachValue.errors && (getOrderFormControls.purchaseProductAttachValue.dirty || getOrderFormControls.purchaseProductAttachValue.touched) }">
+                    <div *ngIf="getOrderFormControls.purchaseProductAttachValue.errors && (getOrderFormControls.purchaseProductAttachValue.dirty || getOrderFormControls.purchaseProductAttachValue.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.purchaseProductAttachValue.errors" class="error">
+                            Vendor Attach Value is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4" id="Div6">
+                    <label for="purchaseProductServiceValue">PO Service Value:<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductServiceValue"
+                        readonly placeholder="Enter PO Service Value..." (change)="purchasevaluesMatchwithservices()"
+                        [ngClass]="{ 'is-invalid': getOrderFormControls.purchaseProductServiceValue.errors && (getOrderFormControls.purchaseProductServiceValue.dirty || getOrderFormControls.purchaseProductServiceValue.touched) }">
+                    <div *ngIf="getOrderFormControls.purchaseProductServiceValue.errors && (getOrderFormControls.purchaseProductServiceValue.dirty || getOrderFormControls.purchaseProductServiceValue.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.purchaseProductServiceValue.errors" class="error">
+                            PO Service Value is required
+                        </div>
+                    </div>
+                </div>
+                <!-- End Here is the Add on Product + Attach + Service //for Purchase -->
+                <!-- End Add On Fly Vendor Selection -->
+                <!-- End Product Selection for purchase -->
+
+
+                <hr class="hr-line mt-2">
+                <h5>OEM Details</h5>
+                <hr class="hr-line">
+
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables"
+                        formArrayName="addOnOem">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>OEM Name</th>
+                                <th>OEM oemDealerId</th>
+                                <th>Customer value</th>
+
+                                <!-- <th>vendor Name</th>
+                                <th>Payment Term</th>
+                                <th>total TP value</th> -->
+                                <th>Total Vendor Value</th>
+                                <th>Action</th>
+
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of getOemFormArray.controls; let index = index;" formGroupName='index'
+                            aria-hidden="true">
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.value.oem}}</td>
+                                <td>{{table.value.oemDealerId}}</td>
+                                <td>{{table.value.poValue}}</td>
+                                <td>{{table.value.poPurchaseValue}}</td>
+                                <td>
+                                    <button type="button" class="px-3 text-danger btn-icon"
+                                        (click)="deleteoemData(index)" ngbTooltip="Delete">
+                                        <i class="uil uil-trash-alt font-size-18"></i>
+                                    </button>
+                                </td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- <hr class="hr-line mt-2">
+                <h5>BDM Details</h5>
+                <hr class="hr-line">
+
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables"
+                        formArrayName="addOnOem">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>number</th>
+                                <th>bussiness Unit</th>
+                                <th>BDM</th>
+                                <th>BDM Percentage</th>
+
+                               
+                               
+
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of getOemFormArray.controls; let index = index;" formGroupName='index'>
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.value.srno}}</td>
+                                <td>{{table.value.businessUnit}}</td>
+                                <td>{{table.value.bdm}}</td>
+                                <td>{{table.value.bdmPercentage}}</td>
+                              
+                               
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+
+
+
+
+                <hr class="hr-line mt-2">
+                <h5>Attachment</h5>
+                <hr class="hr-line">
+                <!-- Start Attachment -->
+                <div class="col-sm-4">
+                    <label for="fileSelector">Attach Files<span class="mandatory" style="color: red;">*</span></label>
+                    <input class="form-control" name="fileSelector" type="file" formControlName="fileSelector"
+                        [(ngModel)]="filesSelector" (change)="onFileChange($event);onClickText();" />
+                </div>
+                <div class="col-sm-4">
+                    <label for="documentName">Document Name</label>
+                    <input name="documentName" type="text" id="documentName" class="form-control"
+                        [(ngModel)]="filesname" placeholder="Document Name" formControlName="documentName" />
+                </div>
+                <div class="col-sm-2">
+                    <button type="button" style="margin-top: 27px;" [disabled]="filebtn" (click)="addFiles($event);"
+                        class="btn btn-warning btn-with-icon">
+                        Add File
+                    </button>
+                </div>
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Remove</th>
+                                <th>Sr. No</th>
+                                <!-- <th>Document Name</th> -->
+                                <th>File Name</th>
+                                <th>File Size</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of tableFileData; let index = index">
+                                <td><i class="uil uil-trash-alt font-size-18" aria-hidden="true"
+                                        style="color: red;cursor: pointer;" (click)="removeFiles(index);"></i></td>
+                                <td>{{index+1}}</td>
+                                <td>{{item.File_Name}}</td>
+                                <td>{{item.File_Size / 1024 / 1024 | number }} MB</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End Attachment -->
+
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createorder);" [enabled]="orderFormGroup.invalid">Book
+            Order</button>
+    </div>
+</ng-template>
+
+
+
+<!-- ----------------createOEM----------------------- -->
+
+<ng-template #createOEM id="bbbPopup" role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title ">Create OEM</h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+    </div>
+
+    <div class="modal-body">
+
+        <hr class="hr-line">
+
+
+        <form [formGroup]="oemFormGroup">
+            <div class="inner mb-3 row">
+                <div class="col-sm-4 mt-2">
+                    <label for="oem">OEM <span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" id="oem" formControlName="oem"
+                        [ngClass]="{ 'is-invalid': getOemFormControls.oem.errors && (getOemFormControls.oem.dirty || getOemFormControls.oem.touched) }"
+                        required>
+                        <option value="default">Select OEM</option>
+                        <option *ngFor="let item of Oems" value="{{item.id}}">{{item.oemName}}</option>
+                    </select>
+                    <div *ngIf="getOemFormControls.oem.errors && (getOemFormControls.oem.dirty || getOemFormControls.oem.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.oem.errors" class="error">
+                            Please select entity
+                        </div>
+
+                    </div>
+                </div>
+                <div class="col-sm-4 mt-2">
+                    <label for="oemDealerId">OEM Dealer Id</label>
+                    <input type="text" formControlName="oemDealerId" class="form-control rounded_" id="oemDealerId"
+                        placeholder="OEM Dealer Id" />
+
+                </div>
+                <!-- <div class="col-sm-2 mt-2">
+                        <button type="button" style="padding-top: 35px;" class="px-3 text-danger btn-icon"
+                            (click)="deleteOem(i)" ngbTooltip="Delete">
+                            <i class="uil uil-trash-alt font-size-18"></i>
+                        </button>
+                    </div> -->
+            </div>
+
+
+            <hr class="hr-line mt-2">
+            <h5>Customer</h5>
+            <hr class="hr-line">
+            <!-- Start Product Selection for sale  -->
+
+            <div class="inner mb-3 row">
+                <div class="col-sm-4">
+                    <label for="productType">Product Type<span class="mandatory" style="color: red;">*</span></label>
+                    <select class="form-select" formControlName="productType" [(ngModel)]="SelectedProductType"
+                        id="productType" #productvalue
+                        [ngClass]="{ 'is-invalid': getOemFormControls.productType.errors && (getOemFormControls.productType.dirty || getOemFormControls.productType.touched) }">
+                        <option value="default">Select Product</option>
+                        <option value="{{item.id}}" *ngFor="let item of OrderType">{{item.productName}}</option>
+                    </select>
+
+                    <div *ngIf="getOemFormControls.productType.errors && (getOemFormControls.productType.dirty || getOemFormControls.productType.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.productType.errors" class="error">
+                            Please select Product Type
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-4">
+                    <label for="productDescription">Product Description<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <textarea type="text" style="height: 20px;" class="form-control" id="productDescription"
+                        formControlName="productDescription" placeholder="Product Description"
+                        [ngClass]="{ 'is-invalid': getOemFormControls.productDescription.errors && (getOemFormControls.productDescription.dirty || getOemFormControls.productDescription.touched) }">
+                </textarea>
+                    <div *ngIf="getOemFormControls.productDescription.errors && (getOemFormControls.productDescription.dirty || getOemFormControls.productDescription.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.productDescription.errors" class="error">
+                            Product Description is required
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="col-sm-4 mt-2">
+
+                    <label for="poValue">Total EUP <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="number" class="form-control" id="poValue" formControlName="poValue"
+                        placeholder="EUP Value"
+                        [readonly]="SelectedProductType == 4 || SelectedProductType == 5 || SelectedProductType == 9"
+                        [ngClass]="{ 'is-invalid': getOemFormControls.poValue.errors && (getOemFormControls.poValue.dirty || getOemFormControls.poValue.touched) }"
+                        required>
+                    <div *ngIf="getOemFormControls.poValue.errors && (getOemFormControls.poValue.dirty || getOemFormControls.poValue.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOemFormControls.poValue.errors" class="error">
+                            PO Value is required
+                        </div>
+                    </div>
+
+                </div>
+            </div>
+
+            <!-- Start Here is the Add on Product + Attach + Service //for Sale -->
+            <div class="inner mb-3 row">
+                <div class="col-sm-3"
+                    [ngStyle]="{'display': SelectedProductType == 4 || SelectedProductType == 5 || SelectedProductType == 9 ? 'block' : 'none'}">
+                    <label for="saleProductValue">Product Value :<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="saleProductValue"
+                        placeholder="Enter PO Product Value..." (change)="valuesMatchwithservices()" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.saleProductValue.errors && (getOrderFormControls.saleProductValue.dirty || getOrderFormControls.saleProductValue.touched) }" required>
+                <div *ngIf="getOrderFormControls.saleProductValue.errors && (getOrderFormControls.saleProductValue.dirty || getOrderFormControls.saleProductValue.touched)" class="invalid-feedback">
+                    <div *ngIf="getOrderFormControls.saleProductValue.errors" class="error">
+                        PO Product Value is required
+                    </div>
+                </div> -->
+
+                </div>
+                <div class="col-sm-3"
+                    [ngStyle]="{'display': SelectedProductType == 4 || SelectedProductType == 5 ? 'block' : 'none'}">
+                    <label for="saleProductAttachValue">Attach Value :<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="saleProductAttachValue"
+                        placeholder="Enter PO Attach Value..." (change)="valuesMatchwithservices()" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.saleProductAttachValue.errors && (getOrderFormControls.saleProductAttachValue.dirty || getOrderFormControls.saleProductAttachValue.touched) }" required>
+                <div *ngIf="getOrderFormControls.saleProductAttachValue.errors && (getOrderFormControls.saleProductAttachValue.dirty || getOrderFormControls.saleProductAttachValue.touched)" class="invalid-feedback">
+                    <div *ngIf="getOrderFormControls.saleProductAttachValue.errors" class="error">
+                        PO Attach Value is required
+                    </div>
+                </div> -->
+                </div>
+                <div class="col-sm-3"
+                    [ngStyle]="{'display': SelectedProductType == 5 || SelectedProductType == 9 ? 'block' : 'none'}">
+                    <label for="saleProductServiceValue">Service Value:<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="number" class="inner form-control" formControlName="saleProductServiceValue"
+                        placeholder="Enter PO Service Value..." (change)="valuesMatchwithservices()" />
+
+                </div>
+            </div>
+
+
+
+            <hr class="hr-line mt-2">
+            <h5>BDM Info</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <!-- <div class="col-md-3">
+                    <label for="srno">Sr.No.</label>
+                    <input type="" class="form-control" id="srno" formControlName="srno" placeholder="number">
+                </div> -->
+
+                <div class="col-md-3">
+                    <label for="businessUnit">Business Unit </label>
+                    <select class="form-select" formControlName="businessUnit"
+                        (change)="getBdmById($event.target.value)">
+                        <option value="0">Select Business Unit</option>
+                        <option *ngFor="let item of businessUnit" value="{{item.id}}">{{item.categoryName}}</option>
+                    </select>
+                </div>
+
+                <div class="col-md-3"
+                    *ngIf="userAccountType == 2 && ( getOemFormControls.businessUnit.value==4 || getOemFormControls.businessUnit.value==2 || getOemFormControls.businessUnit.value==8)">
+                    <!--id="Div10"-->
+
+                    <label for="bdm">BDM </label>
+                    <select class="form-select" formControlName="bdm" id="bdm">
+                        <option value="default">Select BDM</option>
+                        <option *ngFor="let item of BdmsData" value="{{item.id}}">{{item.firstName}} {{item.lastName}}
+                        </option>
+                    </select>
+                </div>
+
+                <div class="col-md-3"
+                    *ngIf="userAccountType == 2 && ( getOemFormControls.businessUnit.value==4 || getOemFormControls.businessUnit.value==2 || getOemFormControls.businessUnit.value==8)">
+                    <label for="bdmPercentage">BDM Percentage</label>
+                    <input type="number" formControlName="bdmPercentage" max=100 class="form-control rounded_"
+                        id="bdmPercentage" placeholder="BDM Percentage">
+                </div>
+
+            </div>
+
+
+
+            <hr class="hr-line mt-2">
+            <h5>Vendor</h5>
+            <hr class="hr-line">
+
+            <div class="col-sm-2 mt-2">
+                <!-- <input type="button" style="margin-top: 30px;" class="btn btn-success inner" value="Add Vendor"
+                   > -->
+            </div>
+            <div formArrayName="addOnVendor">
+                <div class="inner mb-3 row" *ngFor="let data1 of vendordata().controls; let i=index;"
+                    [formGroupName]="i">
+                    <div class="col-sm-4 mt-2">
+                        <label for="vendorValue">Select Vendor<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <ng-select formControlName="vendorValue" id="vendorValue">
+                            <ng-option *ngFor="let item of Vendors" value="{{item.id}}">{{item.vendorName}}
+                            </ng-option>
+                        </ng-select>
+
+
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <label for="vendorPaymentValue">Payment Terms<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <input type="text" formControlName="vendorPaymentValue" class="form-control rounded_"
+                            id="vendorPaymentValue" placeholder="Vendor Purchase Payment Terms">
+                    </div>
+                    <div class="col-sm-3 mt-2">
+                        <label for="vendorPoValue">Total TP Value<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <input type="number" formControlName="vendorPoValue" class="form-control rounded_"
+                            id="vendorPoValue" placeholder="TP Value"
+                            [readonly]="SelectedProductType == 4 || SelectedProductType == 5 || SelectedProductType == 9"
+                            (keyup)="setTotalPurchaseValue()" #vendorPoValue>
+                    </div>
+
+
+
+                    <div class="col-sm-2 mt-2">
+                        <button type="button" style="padding-top: 35px;" class="px-3 text-danger btn-icon"
+                            (click)="deleteVendor(i)" ngbTooltip="Delete">
+                            <i class="uil uil-trash-alt font-size-18"></i>
+                        </button>
+                    </div>
+                    <div class="col-sm-3"
+                        [ngStyle]="{'display': SelectedProductType == 4 || SelectedProductType == 5 || SelectedProductType == 9 ? 'block' : 'none'}">
+                        <label for="vendorProductValue">vendor Product Value :<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <input type="number" class="inner form-control" formControlName="vendorProductValue"
+                            placeholder="Enter Vendor Product Value... " (change)="vendorvaluesMatchwithservices(i)" />
+
+                    </div>
+                    <div class="col-sm-3"
+                        [ngStyle]="{'display': SelectedProductType == 4 || SelectedProductType == 5 ? 'block' : 'none'}">
+                        <label for="vendorProductAttachValue">vendor Attach Value :<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <input type="number" class="inner form-control" formControlName="vendorProductAttachValue"
+                            placeholder="Enter vendor Attach Value..." (change)="vendorvaluesMatchwithservices(i)" />
+
+                    </div>
+                    <div class="col-sm-3"
+                        [ngStyle]="{'display': SelectedProductType == 5 || SelectedProductType == 9 ? 'block' : 'none'}">
+                        <label for="vendorProductServiceValue">vendor Service Value:<span class="mandatory"
+                                style="color: red;">*</span></label>
+                        <input type="number" class="inner form-control" formControlName="vendorProductServiceValue"
+                            placeholder="Enter vendor Service Value..." (change)="vendorvaluesMatchwithservices(i)" />
+
+                    </div>
+
+                </div>
+
+            </div>
+            <hr class="hr-line mt-2">
+            <h5>Vendor</h5>
+            <hr class="hr-line">
+            <!-- Start Product Selection for Purchase -->
+            <div class="col-sm-6">
+                <label for="poPurchaseValue">Total Vendor Value<span class="mandatory"
+                        style="color: red;">*</span></label>
+                <input type="text" name="poPurchaseValue" class="form-control" id="poPurchaseValue"
+                    formControlName="poPurchaseValue" placeholder="Total Vendor Value"
+                    [ngClass]="{ 'is-invalid': getOrderFormControls.poPurchaseValue.errors && (getOrderFormControls.poPurchaseValue.dirty || getOrderFormControls.poPurchaseValue.touched) }"
+                    readonly>
+                <div *ngIf="getOrderFormControls.poPurchaseValue.errors && (getOrderFormControls.poPurchaseValue.dirty || getOrderFormControls.poPurchaseValue.touched)"
+                    class="invalid-feedback">
+                    <div *ngIf="getOrderFormControls.poPurchaseValue.errors" class="error">
+                        PO Purchase Value is required
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">cancel</button>
+        <button class="btn btn-primary" (click)="submitOem(createOEM);modal.dismiss('Cross click');"
+            [disabled]="oemFormGroup.invalid">submit</button>
+    </div>
+
+
+</ng-template>
+<!-- ---------------------end------------------------ -->
+
+
+
+
+<!-- Start View Order -->
+<ng-template #viewbookorder role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Order </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="orderFormGroup">
+            <hr class="hr-line">
+            <h5>Entity Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="entity">Entity</label>
+                    <input type="text" formControlName="entity" class="form-control rounded_" id="entity"
+                        placeholder="Entity" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyName">Company Name</label>
+                    <input type="text" formControlName="companyName" class="form-control rounded_" id="companyName"
+                        placeholder="Company Name" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="companyPaymentTerms">Company Payment Terms</label>
+                    <input type="text" formControlName="companyPaymentTerms" class="form-control rounded_"
+                        id="companyPaymentTerms" placeholder="Company Payment Terms" disabled>
+                </div>
+                <!-- <div class="col-sm-4 mt-2">
+                    <label for="oem">OEM</label>
+                    <input type="text" formControlName="oem" class="form-control rounded_" id="oem" placeholder="OEM"
+                        disabled>
+                </div>
+                <div class="col-sm-4 mt-2">
+                    <label for="oemDealerId">OEM Dealer Id</label>
+                    <input type="text" formControlName="oemDealerId" class="form-control rounded_" id="oemDealerId"
+                        placeholder="OEM Dealer Id" disabled>
+                </div> -->
+
+                <hr class="hr-line mt-2">
+                <h5>Customer PO Details</h5>
+                <hr class="hr-line">
+
+                <div class="col-sm-4">
+                    <label for="poNo">PO No</label>
+                    <input type="text" class="form-control" id="poNo" formControlName="poNo" placeholder="PO No"
+                        disabled />
+                </div>
+                <div class="col-sm-4 mt-2">
+                    <label for="poDate">Date Of PO</label>
+                    <input type="date" class="form-control" id="poDate" formControlName="poDate"
+                        placeholder="Date Of PO" disabled />
+                </div>
+                <div class="col-sm-4 mt-2">
+                    <label for="duration">Duration</label>
+                    <input type="text" class="form-control" id="duration" formControlName="duration"
+                        placeholder="Duration" disabled />
+                </div>
+                <!-- <div class="col-sm-4 mt-2">
+                    <label for="poValue">Total Customer Value</label>
+                    <input type="number" class="form-control" id="poValue" formControlName="poValue"
+                        placeholder="PO Value" disabled />
+                </div> -->
+                <!-- Start Here is the Add on Product + Attach + Service //for Sale -->
+                <div class="col-sm-4 mt-2" id="Div1">
+                    <label>PO Product Value :</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductValue"
+                        placeholder="Enter PO Product Value..." disabled>
+                </div>
+                <div class="col-sm-4 mt-2" id="Div2">
+                    <label>PO Attach Value :</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductAttachValue"
+                        placeholder="Enter PO Attach Value..." disabled>
+                </div>
+                <div class="col-sm-4 mt-2" id="Div3">
+                    <label>PO Service Value:</label>
+                    <input type="number" class="inner form-control" formControlName="saleProductServiceValue"
+                        placeholder="Enter PO Service Value..." disabled>
+                </div>
+
+
+
+                <!-- <div class="col-sm-4">
+                    <label for="businessUnit">Business Unit</label>
+                    <input type="text" formControlName="businessUnit" class="form-control rounded_" id="businessUnit"
+                        placeholder="Business Unit" disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="bdm">BDM</label>
+                    <input type="text" formControlName="bdm" class="form-control rounded_" id="bdm" placeholder="BDM"
+                        disabled>
+                </div>
+                <div class="col-sm-4">
+                    <label for="bdmPercentage">BDM Percentage</label>
+                    <input type="text" formControlName="bdmPercentage" class="form-control rounded_" id="bdmPercentage"
+                        placeholder="BDM Percentage" disabled>
+                </div> -->
+
+                <!-- <hr class="hr-line mt-2">
+                <h5>OEM Details</h5>
+                <hr class="hr-line"> -->
+
+
+                <!-- <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>OEM Name</th>
+                                <th>OEM oemDealerId</th>
+                        
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of oemList; let index = index;">
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.tbl_masters_oem.oemName}}</td>
+                                <td>{{table.oemDealerId}}</td>
+                             
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+                <hr class="hr-line mt-2">
+                <h5>Product Details</h5>
+                <hr class="hr-line">
+
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Product Name</th>
+                                <th>OEM Name</th>
+                                <!-- <th>Product Description</th> -->
+                                <th>Business Unit</th>
+                                <th>BDM</th>
+                                <th>BDM Percentage</th>
+                                <!-- <th>EUP</th> -->
+
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of productList; let index = index;">
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.tbl_masters_product.productName}}</td>
+                                <td>{{table.tbl_masters_oem?.oemName}}</td>
+                                <!-- tbl_order_oems[0].tbl_masters_oem.oemName -->
+                                <!-- <td>{{table.productDescription}}</td> -->
+                                <td>{{table.tbl_masters_business_unit?.categoryName}}</td>
+                                <td>{{table.bdm}}</td>
+                                <td>{{table.bdmPercentage}}</td>
+                                <!-- <td>{{table.poValue}}</td> -->
+                            </tr>
+                        </tbody>
+                    </table>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <label for="poValue">Total EUP</label>
+                            <input type="text" name="poValue" class="form-control" id="poValue"
+                                formControlName="poValue" placeholder="poValue" disabled>
+                        </div>
+
+                        <div class="col-sm-6">
+                            <label for="externalCost">External Cost out</label>
+                            <input type="text" name="externalCost" class="form-control" id="externalCost"
+                                formControlName="externalCost" placeholder="External Cost" disabled>
+                        </div>
+                    </div>
+                </div>
+
+
+
+                <!-- End Here is the Add on Product + Attach + Service //for Sale -->
+                <!-- End Product Selection for sale -->
+                <hr class="hr-line mt-2">
+                <h5>Vendor Details</h5>
+                <hr class="hr-line">
+                <!-- Start Product Selection for Purchase -->
+
+
+
+
+
+                <!-- End Here is the Add on Product + Attach + Service //for Purchase -->
+                <!-- <hr class="hr-line mt-2">
+                <h5>Vendor </h5>
+                <hr class="hr-line"> -->
+
+                <!-- <label>Vendors </label> -->
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Vendor Name</th>
+                                <th>Vendor Payment Terms</th>
+                                <th>TP</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of addOnVendors; let index = index">
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.tbl_masters_vendor.vendorName}}</td>
+                                <td>{{table.vendorPaymentValue}}</td>
+                                <td>{{table.vendorPoValue}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="col-sm-12">
+                    <label for="poPurchaseValue">Total TP</label>
+                    <input type="number" class="form-control" id="poPurchaseValue" formControlName="poPurchaseValue"
+                        placeholder="Product Value" disabled />
+                </div>
+
+                <!-- Start Here is the Add on Product + Attach + Service //for Purchase -->
+                <div class="col-sm-4" id="Div4">
+                    <label>PO Product Value :</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductValue"
+                        placeholder="Enter PO Product Value..." disabled>
+                </div>
+                <div class="col-sm-4" id="Div5">
+                    <label>PO Attach Value :</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductAttachValue"
+                        placeholder="Enter PO Attach Value..." disabled>
+                </div>
+                <div class="col-sm-4" id="Div6">
+                    <label>PO Service Value:</label>
+                    <input type="number" class="inner form-control" formControlName="purchaseProductServiceValue"
+                        placeholder="Enter PO Service Value..." disabled>
+                </div>
+
+
+                <!-- <hr class="hr-line mt-2">
+                <h5>BDM Info</h5>
+                <hr class="hr-line">
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>Number</th>
+                                <th>Business Unit</th>
+                                <th>BDM</th>
+                                <th>BDM Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of addBDMs; let index = index">
+                            <tr>
+                                <td>{{index+1}}</td>
+                                <td>{{table.srno}}</td>
+                                <td>{{table.tbl_masters_business_unit.categoryName}}</td>
+                                <td>{{table.bdm}}</td>
+                                <td>{{table.bdmPercentage}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+
+
+                <!-- End Add On Fly Vendor Selection -->
+                <!-- End Product Selection for purchase -->
+                <hr class="hr-line mt-2">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>POGM</th>
+                                <th>POGM%</th>
+                                <th>PM</th>
+                                <th>BR</th>
+                                <th>External Cost</th>
+                                <th>GP</th>
+                                <th>GP%</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>{{pogm}}</td>
+                                <td>{{pogmPer | number:'1.0-2'}}</td>
+                                <td>{{pmvalue}}</td>
+                                <td>{{brValue}}</td>
+                                <td>{{externalCost}}</td>
+                                <td>{{gpValue}}</td>
+                                <td>{{gpPer|number:'1.0-2'}}</td>
+
+
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <hr class="hr-line mt-2">
+                <h5>Attachments</h5>
+                <hr class="hr-line">
+                <!-- Start Attachment -->
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Sr. No</th>
+                                <th>File Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let item of vendorSelectedFiles; let index = index">
+                                <td>{{index+1}}</td>
+                                <td>{{item.fileName}}</td>
+                                <td>
+                                    <button class="btn btn-success" (click)="downloadFile(item);">Download file</button>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <!-- End Attachment -->
+                <!-- <h5>History</h5>
+                <hr class="hr-line">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr>
+                                <th>Name of last Approval</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                <th>Comment</th>
+                            </tr>
+                        </thead>
+                        <tbody *ngFor="let table of history; let i=index">
+                            <tr>
+                                <td>{{table.tbl_user.firstName}}</td>
+                                <td>{{table.createdAt | date:'dd-MM-yyyy'}} {{table.time}} </td>
+                                <td>
+                                    <span *ngIf="table.status == 'Pending'" style="color:orange">
+                                        {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Approved'" style="color:green">
+                                        {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Fully Approved!!'" style="color:green">
+                                        {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Rejected'" style="color:red">
+                                        {{table.status}}</span>
+                                </td>
+                                <td>{{table.comment}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+            </div>
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- -----end-------- -->
+
+<!-- Start View Approval Order -->
+<ng-template #viewApprovalOrderFMS role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Order Approval</h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="orderFormGroup">
+            <hr class="hr-line">
+
+            <!-- <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <thead>
+                            <tr >
+                                <th>Name of last Approval</th>
+                                <th>Date</th>
+                                <th>Status</th>
+                                 <th>Comment</th>
+                             </tr>
+                        </thead>
+                        <tbody *ngFor="let table of history; let i=index">
+                            <tr>
+                                <td>{{table.tbl_user.firstName}}</td>
+                                <td>{{table.createdAt | date:'dd-MM-yyyy'}} {{table.time}}  </td>
+                                 <td>
+                                <span *ngIf="table.status == 'Pending'" style="color:orange">
+                                    {{table.status}}</span>
+                                <span *ngIf="table.status == 'Approved'" style="color:green">
+                                    {{table.status}}</span>
+                                    <span *ngIf="table.status == 'Fully Approved!!'" style="color:green">
+                                        {{table.status}}</span>
+                                <span *ngIf="table.status == 'Rejected'" style="color:red">
+                                    {{table.status}}</span>
+                               </td>
+                                <td>{{table.comment}}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div> -->
+
+            <div class="app-modal-body">
+                <div class="container">
+                    <div class="progress-bar">
+                        <div class="progress-step " id="step_1">
+                            <div class="step-count">1</div>
+                            <div class="step-description">HR Department</div>
+                        </div>
+                        <div class="progress-step" id="step_2">
+                            <div class="step-count">2</div>
+                            <div class="step-description">Finance Department</div>
+                        </div>
+                        <div class="progress-step" id="step_3">
+                            <div class="step-count">3</div>
+                            <div class="step-description">Sales Head Department</div>
+                        </div>
+
+                        <div class="progress-step" id="step_4">
+                            <div class="step-count">4</div>
+                            <div class="step-description">Service Delivery Head</div>
+                        </div>
+                        <div class="progress-step" id="step_5">
+                            <div class="step-count">5</div>
+                            <div class="step-description">Final Department</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- <div class="app-modal-body" >
+                <div class="container">
+                    <div class="progress-bar">
+                        <div class="progress-step" id="step_2">
+                            <div class="step-count">1</div>
+                            <div class="step-description">Finance Department</div>
+                        </div>
+                        <div class="progress-step" id="step_3">
+                            <div class="step-count">2</div>
+                            <div class="step-description">Technical Department</div>
+                        </div>
+                        <div class="progress-step" id="step_4">
+                            <div class="step-count">3</div>
+                            <div class="step-description">Sales Head Department</div>
+                        </div>
+                        <div class="progress-step" id="step_5">
+                            <div class="step-count">4</div>
+                            <div class="step-description">Final Department</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div> -->
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- end -->
+
+<!-- viewApprovalOrderNONFMS -->
+<ng-template #viewApprovalOrderNONFMS role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Order Approval</h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="orderFormGroup">
+            <hr class="hr-line">
+
+            <div class="app-modal-body">
+                <div class="container">
+                    <div class="progress-bar">
+                        <div class="progress-step" id="step_1">
+                            <div class="step-count">1</div>
+                            <div class="step-description">Finance Department</div>
+                        </div>
+                        <div class="progress-step" id="step_2">
+                            <div class="step-count">2</div>
+                            <div class="step-description">Technical Department</div>
+                        </div>
+                        <div class="progress-step" id="step_3">
+                            <div class="step-count">3</div>
+                            <div class="step-description">Sales Head Department</div>
+                        </div>
+                        <div class="progress-step" id="step_4">
+                            <div class="step-count">4</div>
+                            <div class="step-description">Final Department</div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!-- end -->
+
+<!-- deleteFullOrderbyId -->
+<ng-template #deleteFullOrderbyId role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Order</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this Order!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteFullOrderbyId(deleteFullOrderbyId)">Delete Order</button>
+    </div>
+</ng-template>
+<!-- end -->
+
+
+<!-- studentDetailsExcel -->
+<div class="card-body" #studentDetailsExcel class="hidden">
+    <easy-grid [dataArray]="NewData" [dataColumns]="columns" [primaryKey]="'id'" [srNoEnable]="true"
+        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false">
+    </easy-grid>
+</div>
+
+<!-- end -->
+
+<!-- BdmDetailsExcel -->
+<div class="card-body" #BdmDetailsExcel class="hidden">
+    <easy-grid [dataArray]="BDMOrdersXL" [dataColumns]="Columns2" [primaryKey]="'id'" [srNoEnable]="true"
+        [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false">
+    </easy-grid>
+</div>
+<!-- end -->

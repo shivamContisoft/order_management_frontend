@@ -1,0 +1,752 @@
+<!--For admin Account-->
+<div class="row" *ngIf="this.userAccountType == 1 ">
+    <h1 style="color:#df0101;text-align:center">Business Report</h1>
+    <br><br>
+    <div class="col-12">
+
+        <form [formGroup]="yearFormGroup">
+            <!-- Table -->
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="year">Financial Year</label>
+                    <select id="year" class="form-select" formControlName="year"
+                        (change)="getYearData($event.target.value)">
+                        <option value="default" selected>Select Year</option>
+                        <option value="{{item.id}}" *ngFor="let item of Years">{{item.id}}</option>
+                    </select>
+                </div>
+            </div>
+        </form>
+        <br>
+
+        <div class="row">
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <td>
+                        <h4>Total Target</h4>
+                        Rs. {{findsumOftotalAchieved() }}
+                    </td>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <td>
+                        <h4>Total Min Eligiblity</h4>
+                        40%
+                    </td>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <td>
+                        <h4>Total Min Achievement</h4>
+                        Rs. {{findsumOfminAchievement()}}
+                    </td>
+                </div>
+            </div>
+            <!-- | currency:"&#837;" -->
+        </div>
+        <div class="row">
+
+            <div class="col-sm-4">
+                <div class="card">
+                    <td>
+                        <h4>Total Target Achieved</h4>
+                        Rs. {{findsumTargetAchieve()}}
+                    </td>
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <div class="card">
+                    <td>
+                        <h4>Total % Achieved</h4>
+                        {{findOfpercentageAchieved()| number:'1.0-2'}}%
+                    </td>
+                </div>
+            </div>
+
+        </div>
+        <div class="row">
+
+        </div><br>
+
+
+
+        <div class="row">
+            <div class="col-sm-12 BDMTable">
+             
+
+                <div class="table-responsive">
+                    <table id="basic-datatable" >
+
+
+                        <tr>
+                            <th>Name</th>
+                            <th>Type</th>
+                            <th>CTC</th>
+                            <th>Variable</th>
+                            <th>Total Target </th>
+                            <th>Min. Achievement </th>
+                            <th>Target Achieved </th>
+                            <th>% Achievement </th>
+                            <th>Variable Pay</th>
+                        </tr>
+                        <tbody>
+                            <tr *ngFor="let table of YearArray; let i=index">
+
+                                
+                                <td>{{table.name}} {{table.name1}}</td>
+                                <td>{{table.type == 'bdm' ? 'BDM' : 'AM'}}</td>
+                                <td>Rs. {{table.ctc}} </td>
+                                <td>Rs. {{table.variablePercentage}}</td>
+                                <td>Rs. {{table.totalAchieved }}</td>
+                                <td>Rs. {{table.minAchievement }}</td>
+                                <td>Rs. {{table.targetAchieve }}</td>
+                                <td>{{table.percentageAchieved |number:'1.0-2'}}%</td>
+                                <td>Rs. {{table.variablePay | number:'1.0-2' }}</td>
+                            </tr>
+
+                        </tbody>
+                        <tr>
+                            <td><b>Total (Includes AM Only)</b></td>
+                            <td></td>
+                            <td><b>{{findsumOfCtc()}}</b></td>
+                            <td><b>{{findsumOfvariablePercentage()}}</b></td>
+                            <td><b>{{findsumOftotalAchieved()}}</b></td>
+                            <!-- <td><b>{{findsumOfminEligiblity()}}</b></td> -->
+                            <td><b>{{findsumOfminAchievement()}}</b></td>
+                            <td><b>{{findsumTargetAchieve()}}</b></td>
+                            <td><b>{{findOfpercentageAchieved()| number:'1.0-2'}}</b></td>
+                            <td><b>{{findOfVariablePay() | number:'1.0-2'}}</b></td>
+                        </tr>
+
+                    </table>
+                </div>
+            </div>
+        
+        </div>
+    </div>
+</div>
+
+<!--end admin account-->
+
+
+
+
+
+<!-- <div class="row" *ngIf="this.userAccountType == 5 ">
+        <h1 style="color:green;text-align:center">Fully Approved Orders</h1>
+        <br><br>
+        <div class="col-12">
+            <div class="card">
+        <div class="row" >
+            <div class="col-sm-12">
+            
+                <easy-grid [dataArray]="OrdersArray" [dataColumns]="Columns" [primaryKey]="'id'" [srNoEnable]="true"
+                [headerBgColor]="LightBlue" [isColumnSelectionEnabled]="false" [actionsArray]="Actions"
+                [isActionsEnabled]="true" (onActionPerformed)="addData($event, addFullyApprovedorderData)" (onActionPerformed)="ViewInvoiceData($event, viewInvoiceData)">
+            </easy-grid>
+                
+                </div>
+            </div>
+            </div>
+            </div>
+
+    </div> -->
+
+<ng-template #addFullyApprovedorderData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Invoice Data </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="invoiceFormGroup">
+            <hr class="hr-line">
+            <h5>Sales Invoice</h5>
+            <hr class="hr-line">
+
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <label for="invoiceRaisedDate">Invoice Date</label>
+                    <input type="date" formControlName="invoiceRaisedDate" class="form-control" id="invoiceRaisedDate"
+                        placeholder="invoiceRaisedDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="TIPLInvoiceNo">TIPL Invoice No<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="TIPLInvoiceNo" class="form-control rounded_" id="TIPLInvoiceNo"
+                        placeholder="TIPLInvoiceNo" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                                Invoice Raised Date is required
+                            </div>
+                        </div> -->
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceSalesAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceSalesAmount" class="form-control rounded_"
+                        id="invoiceSalesAmount" placeholder="enter invoice Sales Amount" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                                Invoice Raised Date is required
+                            </div>
+                        </div> -->
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Due Date<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" formControlName="DueDate" class="form-control rounded_" id="DueDate"
+                        placeholder="DueDate" readonly />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                            class="invalid-feedback">
+                            <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                                Invoice Raised Date is required
+                            </div>
+                        </div> -->
+                </div>
+                <div class="col-sm-3">
+                    <label for="qre">QRE</label>
+                    <select id="qre" class="form-select" formControlName="qre" placeholder="qre">
+                        <!-- <option value="default" selected>Select Location</option> -->
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+                <div class="col-sm-3">
+                    <label for="paymentCollection">Payment Collection</label>
+                    <select id="paymentCollection" class="form-select" formControlName="paymentCollection"
+                        placeholder="payment Collection">
+                        <!-- <option value="default" selected>Select Location</option> -->
+                        <option value="0">No</option>
+                        <option value="1">Yes</option>
+                    </select>
+                </div>
+
+            </div>
+
+            <hr class="hr-line mt-2">
+            <h5>Vendor</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="vendorName">Vendor Name</label>
+                    <select class="form-select" formControlName="vendorName" id="vendorName">
+                        <option *ngFor="let item of Vendors" value="{{item.id}}">{{item.vendorName}}</option>
+                    </select>
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+                <div class="col-sm-4">
+                    <label for="TIPLPONumber">TIPL PO Number</label>
+                    <input type="text" formControlName="TIPLPONumber" class="form-control rounded_" id="TIPLPONumber "
+                        placeholder="TIPLPONumber" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+                <div class="col-sm-4">
+                    <label for="DueDate">TIPL PO Date</label>
+                    <input type="date" formControlName="TIPLPODate" class="form-control rounded_" id="TIPLPODate"
+                        placeholder="TIPLPODate" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+            </div>
+            <hr class="hr-line mt-2">
+            <h5>Purchase Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="purchaseInvoiceDate">Invoice Date</label>
+                    <input type="date" formControlName="purchaseInvoiceDate" class="form-control"
+                        id="purchaseInvoiceDate" placeholder="purchaseInvoiceDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Number</label>
+                    <input type="text" formControlName="InvoiceNumber" class="form-control rounded_" id="InvoiceNumber"
+                        placeholder="InvoiceNumber" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Amount</label>
+                    <input type="text" formControlName="InvoiceAmount" class="form-control rounded_" id="InvoiceAmount"
+                        placeholder="InvoiceAmount" />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Due Date</label>
+                    <input type="date" formControlName="InvoiceRecievedDate" class="form-control rounded_"
+                        id="InvoiceRecievedDate" placeholder="InvoiceRecievedDate" readonly />
+                    <!-- [ngClass]="{ 'is-invalid': getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched) }">
+                    <div *ngIf="getOrderFormControls.companyPaymentTerms.errors && (getOrderFormControls.companyPaymentTerms.dirty || getOrderFormControls.companyPaymentTerms.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getOrderFormControls.companyPaymentTerms.errors" class="error">
+                            Invoice Raised Date is required
+                        </div>
+                    </div> -->
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(addFullyApprovedorderData);"
+            [disabled]="invoiceFormGroup.invalid">Add
+            Data</button>
+    </div>
+</ng-template>
+
+<ng-template #viewInvoiceData role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Data of Invoice </h5>
+        <button type="button" class="btn-close" aria-hidden="true"
+            (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="invoiceFormGroup">
+            <hr class="hr-line">
+            <h5>Sales Invoice</h5>
+            <hr class="hr-line">
+
+            <div class="row">
+
+                <div class="col-sm-3">
+                    <label for="invoiceRaisedDate">Invoice Date</label>
+                    <input type="date" formControlName="invoiceRaisedDate" class="form-control" id="invoiceRaisedDate"
+                        placeholder="invoiceRaisedDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="TIPLInvoiceNo">TIPL Invoice No<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="TIPLInvoiceNo" class="form-control rounded_" id="TIPLInvoiceNo"
+                        placeholder="TIPLInvoiceNo" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="invoiceSalesAmount">Invoice Amount<span class="mandatory"
+                            style="color: red;">*</span></label>
+                    <input type="text" formControlName="invoiceSalesAmount" class="form-control rounded_"
+                        id="invoiceSalesAmount" placeholder="enter invoice Sales Amount" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Due Date<span class="mandatory" style="color: red;">*</span></label>
+                    <input type="date" formControlName="DueDate" class="form-control rounded_" id="DueDate"
+                        placeholder="DueDate" readonly />
+
+                </div>
+
+
+            </div>
+
+            <hr class="hr-line mt-2">
+            <h5>Vendor</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-4">
+                    <label for="VendorName">Vendor Name</label>
+                    <select class="form-select" formControlName="VendorName" id="vendorSelection">
+                        <option *ngFor="let item of Vendors" value="{{item.id}}">{{item.vendorName}}</option>
+                    </select>
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="TIPLPONumber">TIPL PO Number</label>
+                    <input type="text" formControlName="TIPLPONumber" class="form-control rounded_" id="TIPLPONumber "
+                        placeholder="TIPLPONumber" readonly />
+
+                </div>
+                <div class="col-sm-4">
+                    <label for="DueDate">TIPL PO Date</label>
+                    <input type="date" formControlName="TIPLPODate" class="form-control rounded_" id="TIPLPODate"
+                        placeholder="TIPLPODate" readonly />
+
+                </div>
+            </div>
+            <hr class="hr-line mt-2">
+            <h5>Purchase Invoice Details</h5>
+            <hr class="hr-line">
+            <div class="row">
+                <div class="col-sm-3">
+                    <label for="purchaseInvoiceDate">Invoice Date</label>
+                    <input type="date" formControlName="purchaseInvoiceDate" class="form-control"
+                        id="purchaseInvoiceDate" placeholder="purchaseInvoiceDate" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Number</label>
+                    <input type="text" formControlName="InvoiceNumber" class="form-control rounded_" id="InvoiceNumber"
+                        placeholder="InvoiceNumber" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Amount</label>
+                    <input type="text" formControlName="InvoiceAmount" class="form-control rounded_" id="InvoiceAmount"
+                        placeholder="InvoiceAmount" readonly />
+
+                </div>
+                <div class="col-sm-3">
+                    <label for="DueDate">Invoice Due Date</label>
+                    <input type="date" formControlName="InvoiceRecievedDate" class="form-control rounded_"
+                        id="InvoiceRecievedDate" placeholder="InvoiceRecievedDate" readonly />
+
+                </div>
+
+            </div>
+
+
+        </form>
+    </div>
+
+
+    <div class="modal-footer">
+
+        <button type="button" class="btn btn-secondary"
+            (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div>
+</ng-template>
+<!--for BDM Dashboard--->
+<div class="row" *ngIf="this.userAccountType==3 ">
+    <h1 style="color:#df0101;text-align:center">Your Achievement Status</h1>
+    <div class="col-12">
+
+
+        <!-- <div class="row">
+                    <div class="col-sm-12">
+                        <div class="table-responsive">
+                            <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                                <thead>
+                                    <tr>
+                                             <th>Name</th>
+                                            <th>CTC</th>
+                                            <th>Variable</th>
+                                            <th>Total Target </th>
+                                            <th>Min Eligiblity</th>
+                                            <th>Min. Achievement </th>
+                                            <th>Target Achieved </th>
+                                            <th>% Achievement </th>
+                                            <th>Variable Pay</th>
+                                  
+                                    </tr>
+                                </thead>
+                                <tbody *ngFor="let table of bdmUserArray; let i=index">
+                                    <tr>
+                                        <td>
+                                            {{table.name}} {{table.name1}}
+                                        </td>
+                                        <td>{{table.ctc}}</td>
+                                        <td>{{table.variablePercentage}}</td>
+                                        <td>
+                                            {{table.totalAchieved }}
+                                        </td>
+                                        <td>
+                                            {{table.minEligiblity }}
+                                        </td>
+                                        <td>
+                                            {{table.minAchievement }}
+                                        </td>
+                                        <td>
+                                            {{table.targetAchieve }}
+                                        </td>
+                                        <td>
+                                            {{table.percentageAchieved |number:'1.0-2'}}
+                                        </td>
+                                        <td>
+                                            {{table.variablePay }}
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                
+                    </div>
+    
+    
+                </div> -->
+
+        <div class="row">
+            <div class="col-sm-12 ">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                        <!-- <thead>
+                                    <tr>
+                                             <th>Name</th>
+                                            <th>CTC</th>
+                                            <th>Variable</th>
+                                            <th>Total Target </th>
+                                            <th>Min Eligiblity</th>
+                                            <th>Min. Achievement </th>
+                                            <th>Target Achieved </th>
+                                            <th>% Achievement </th>
+                                            <th>Variable Pay</th>
+                                  
+                                    </tr>   
+                                </thead> -->
+                        <!-- <tbody *ngFor="let table of bdmUserArray; let i=index"> -->
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Name</h6>
+                                        <h4>{{finalObject1?.name}} {{finalObject1?.name1}}</h4>
+                                    </td>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>CTC</h6>
+                                        <h4>Rs. {{finalObject1?.ctc}}</h4>
+                                    </td>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Variable</h6>
+                                        <h4>Rs. {{finalObject1?.variablePercentage}}</h4>
+                                    </td>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Total Target</h6>
+                                        <h4>Rs. {{finalObject1?.totalAchieved }}</h4>
+                                    </td>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+
+                                <div class="card">
+                                    <td>
+                                        <h6>Min Eligiblity</h6>
+                                        <h4>{{finalObject1?.minEligiblity }}%</h4>
+                                    </td>
+                                </div>
+                            </div>
+
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Min. Achievement</h6>
+                                        <h4>Rs. {{finalObject1?.minAchievement }}</h4>
+                                    </td>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Target Achieved</h6>
+                                        <h4>Rs. {{finalGp1 | number:'1.0-2' }}</h4>
+                                    </td>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>% Achievement</h6>
+                                        <h4>{{finalObject1?.percentageAchieved |number:'1.0-2'}}%</h4>
+                                    </td>
+                                </div>
+                            </div>
+                            <div class="col-sm-4">
+                                <div class="card">
+                                    <td>
+                                        <h6>Variable Pay</h6>
+                                        <h4>Rs. {{finalObject1?.variablePay }}</h4>
+                                    </td>
+                                </div>
+                            </div>
+                        </div>
+                        <!-- </tbody> -->
+                    </table>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+<!--end BDM Dashboard--->
+
+<!--for AM Dashboard--->
+
+
+<!-- <div id="chart">
+    <apx-chart
+      [series]="chartOptions.series"
+      [chart]="chartOptions.chart"
+      [xaxis]="chartOptions.xaxis"
+      [stroke]="chartOptions.stroke"
+      [tooltip]="chartOptions.tooltip"
+      [dataLabels]="chartOptions.dataLabels"
+    ></apx-chart>
+  </div> -->
+
+
+
+
+
+
+<div class="row" *ngIf="this.userAccountType==2 ">
+    <h1 style="color:#df0101;text-align:center">Your Achievement Status </h1>
+    <div class="col-12">
+        <div class="row">
+            <div class="col-sm-12">
+                <div class="table-responsive">
+                    <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+
+                        <tbody>
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Name</h6>
+                                            <h4> {{finalObject?.name}} {{finalObject?.name1}}</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>CTC</h6>
+                                            <h4>Rs. {{finalObject?.ctc}}Rs </h4>
+                                        </td>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Variable</h6>
+                                            <h4>Rs. {{finalObject?.variablePercentage}}</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Total Target</h6>
+                                            <h4>Rs. {{finalObject?.totalAchieved }} </h4>
+                                        </td>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+
+                                    <div class="card">
+                                        <td>
+                                            <h6>Min Eligiblity</h6>
+                                            <h4>{{finalObject?.minEligiblity }}%</h4>
+                                        </td>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Min. Achievement</h6>
+                                            <h4>Rs. {{finalObject?.minAchievement }}</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Target Achieved</h6>
+                                            <h4>Rs. {{ finalGp |number:'1.0-2'}}</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>% Achievement</h6>
+                                            <h4>{{finalObject?.percentageAchieved |number:'1.0-2'}}%</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                                <div class="col-sm-4">
+                                    <div class="card">
+                                        <td>
+                                            <h6>Variable Pay</h6>
+                                            <h4>Rs. {{finalObject?.variablePay }}</h4>
+                                        </td>
+                                    </div>
+                                </div>
+                            </div>
+                        </tbody>
+                    </table>
+                </div>
+
+            </div>
+
+
+        </div>
+
+    </div>
+
+</div>
+<!--end AM Dashboard--->

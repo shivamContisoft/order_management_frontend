@@ -1,0 +1,309 @@
+{
+    "banks": [
+        {
+            "Sr_no": "1",
+            "name": "Bank of Baroda",
+            "url": "https://feba.bobibanking.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=012"
+        },
+        {
+            "Sr_no": "2",
+            "name": "Indian Bank",
+            "url": "https://www.indianbank.net.in/jsp/startIB.jsp"
+        },
+        {
+            "Sr_no": "3",
+            "name": "Bank of Maharashtra",
+            "url": "https://www.mahaconnect.in/InternetBanking1/ib/loginCorporate.jsf?lt=C..."
+        },
+        {
+            "Sr_no": "4",
+            "name": "Canara Bank",
+            "url": "https://candi.canarabank.in/omnichannel/"
+        },
+        {
+            "Sr_no": "5",
+            "name": "Central Bank of India",
+            "url": "https://www.centralbank.net.in/servlet/ibs.servlets.IBSLoginServlet?HandleID=START&ApplnFlag=C&browserType=0.0;%20Win"
+        },
+        {
+            "Sr_no": "6",
+            "name": "Bank of India",
+            "url": "https://starconnectcbs.bankofindia.com/BankAwayCorporate/(S(l00f1545kbvqmy45sfjnwc45))/web/L001/retail/jsp/user/CorporateSignOn.aspx?RequestId=52695436"
+        },
+        {
+            "Sr_no": "7",
+            "name": "Indian Overseas Bank",
+            "url": "https://www.iobnet.co.in/ibanking/corplogin.do"
+        },
+        {
+            "Sr_no": "8",
+            "name": "Punjab National Bank",
+            "url": "https://internetbanking.netpnb.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&__FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=024"
+        },
+        {
+            "Sr_no": "9",
+            "name": "State Bank of India",
+            "url": "https://yonobusiness.sbi/login/yonobusinesslogin"
+        },
+        {
+            "Sr_no": "10",
+            "name": "UCO Bank",
+            "url": "https://www.ucoebanking.in/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=028&LANG_ID=001&UserType=C"
+        },
+        {
+            "Sr_no": "11",
+            "name": "Union Bank of India",
+            "url": "https://www.unionbankonline.co.in/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=7&BANK_ID=026&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "12",
+            "name": "Axis Bank Ltd.",
+            "url": "https://corporate.axisbank.co.in/wps/portal/cBanking/axiscbanking/AxisCorporateLogin/!ut/p/a1/04_Sj9CPykssy0xPLMnMz0vMAfGjzOKNAzxMjIwNjLwszI0cDRw9PU3dw3xcjP19TIAKIoEKDHAARwNC-sP1o_AqMTWFKsBjRUFuhEGmo6IiACFl0ps!/dl5/d5/L2dBISEvZ0FBIS9nQSEh/?_ga=2.185764713.1789539251.1645600725-697252625.1645600725"
+        },
+        {
+            "Sr_no": "13",
+            "name": "Bandhan Bank Ltd.",
+            "url": "https://bandhanbankonline.com/Corporate/"
+        },
+        {
+            "Sr_no": "14",
+            "name": "CSB Bank Ltd.",
+            "url": "https://corpnet.csb.co.in/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=CSB&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "15",
+            "name": "City Union Bank Ltd.",
+            "url": "https://www.onlinecub.net/servlet/cb.servlets.CBLoginServlet"
+        },
+        {
+            "Sr_no": "16",
+            "name": "DCB Bank Ltd.",
+            "url": "https://pib.dcbbank.com/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=072"
+        },
+        {
+            "Sr_no": "17",
+            "name": "Dhanlaxmi Bank Ltd.",
+            "url": "https://netbank.dhanbank.in/DBCorporateBank/"
+        },
+        {
+            "Sr_no": "18",
+            "name": "Federal Bank Ltd.",
+            "url": "https://www.fednetbank.com/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=7&BANK_ID=049&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "19",
+            "name": "HDFC Bank Ltd",
+            "url": "https://corporatebanking.hdfcbank.com/cbx/CBXLogin.jsp"
+        },
+        {
+            "Sr_no": "20",
+            "name": "ICICI Bank Ltd.",
+            "url": "https://cibnext.icicibank.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=ICI&ITM=nli_corp_primer_login_btn_mob"
+        },
+        {
+            "Sr_no": "21",
+            "name": "Induslnd Bank Ltd",
+            "url": "https://indusdirect.indusind.com/indusdirect/auth"
+        },
+        {
+            "Sr_no": "22",
+            "name": "IDFC First Bank Ltd.",
+            "url": "https://my.idfcfirstbank.com/login"
+        },
+        {
+            "Sr_no": "23",
+            "name": "Jammu & Kashmir Bank Ltd.",
+            "url": "https://www.jkbankonline.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=JKB"
+        },
+        {
+            "Sr_no": "24",
+            "name": "Karnataka Bank Ltd.",
+            "url": "https://moneyclick.ktkbank.com/BankAwayRetail/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=KBL&LANGUAGE_ID=001&USR_TYPE=2"
+        },
+        {
+            "Sr_no": "25",
+            "name": "Karur Vysya Bank Ltd.",
+            "url": "https://www.kvbin.com/B001/ENULogin.jsp"
+        },
+        {
+            "Sr_no": "26",
+            "name": "Kotak Mahindra Bank Ltd",
+            "url": "https://netbanking.kotak.com/knb2/"
+        },
+        {
+            "Sr_no": "27",
+            "name": "Lakshmi Vilas Bank Ltd.",
+            "url": "https://www.lvbankonline.in/index.html?module=login"
+        },
+        {
+            "Sr_no": "28",
+            "name": "Nainital Bank Ltd.",
+            "url": "https://naininetbanking.nainitalbank.co.in:2080/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=01&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "29",
+            "name": "RBL Bank Ltd.",
+            "url": "https://online.rblbank.com/CorpBank/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&__FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=176"
+        },
+        {
+            "Sr_no": "30",
+            "name": "South Indian Bank Ltd.",
+            "url": "https://sibernet.southindianbank.com/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=059"
+        },
+        {
+            "Sr_no": "31",
+            "name": "Tamilnad Mercantile Bank Ltd.",
+            "url": "https://www.tmbnet.in/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=TMB"
+        },
+        {
+            "Sr_no": "32",
+            "name": "YES Bank Ltd.",
+            "url": "https://corporate.yesbank.co.in/corpbanking/entry"
+        },
+        {
+            "Sr_no": "33",
+            "name": "IDBI Bank Ltd.",
+            "url": "https://corp.idbibank.co.in/corp/AuthenticationController?FORMSGROUP_ID__=AuthenticationFG&__START_TRAN_FLAG__=Y&__FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=IBKL"
+        },
+        {
+            "Sr_no": "34",
+            "name": "Au Small Finance Bank Limited",
+            "url": "https://cib.aubank.in/iCashProGUI/#/login"
+        },
+        {
+            "Sr_no": "35",
+            "name": "Capital Small Finance Bank Limited",
+            "url": "https://netbanking.capitalbank.in/ReachIB/inetbanking/login"
+        },
+        {
+            "Sr_no": "36",
+            "name": "Equitas Small Finance Bank Limited",
+            "url": "https://inet.equitasbank.com/EquitasCorp/#"
+        },
+        {
+            "Sr_no": "37",
+            "name": "Suryoday Small Finance Bank Limited",
+            "url": "https://corporate.suryodaybank.co.in/Corporate/prelogin"
+        },
+        {
+            "Sr_no": "38",
+            "name": "Ujjivan Small Finance Bank Limited",
+            "url": "https://cib.ujjivansfb.in/UjjivanCorp/"
+        },
+        {
+            "Sr_no": "39",
+            "name": "Utkarsh Small Finance Bank Limited",
+            "url": "https://corporatenetbanking.utkarsh.bank/corporate/prelogin"
+        },
+        {
+            "Sr_no": "40",
+            "name": "ESAF Small Finance Bank Limited",
+            "url": "https://netbanking.esafbank.com/Corporate/prelogin"
+        },
+        {
+            "Sr_no": "41",
+            "name": "Fincare Small Finance Bank Limited",
+            "url": "https://cib.fincarebank.com/"
+        },
+        {
+            "Sr_no": "42",
+            "name": "Jana Small Finance Bank Limited",
+            "url": "https://corporatebanking.janabank.com/Corporate/prelogin"
+        },
+        {
+            "Sr_no": "43",
+            "name": "North East Small Finance Bank Limited",
+            "url": "https://netbanking.nesfb.com/Corporate/prelogin"
+        },
+        {
+            "Sr_no": "44",
+            "name": "Andhra Pragathi Grameena Bank",
+            "url": "https://apgbonline.in/APGB/corpLogin"
+        },
+        {
+            "Sr_no": "45",
+            "name": "Andhra Pradesh Grameena Vikas Bank",
+            "url": "https://apgvbonline.com/OnlineAPGVB/login"
+        },
+        {
+            "Sr_no": "46",
+            "name": "Arunachal Pradesh Rural Bank",
+            "url": "https://cedgenetbanking.in/APRB/corpLogin"
+        },
+        {
+            "Sr_no": "47",
+            "name": "Baroda Gujarat Gramin Bank",
+            "url": "https://ibanking.barodarrb.co.in/GUBankAwayCorporate/(S(thvvccmdia3mvb55dtetqn55))/web/L001/retail/jsp/arcot/pages/CorporateLogin.aspx?RequestId=62476974"
+        },
+        {
+            "Sr_no": "48",
+            "name": "Baroda Rajasthan Kshetriya Gramin Bank",
+            "url": "https://ibanking.barodarrb.co.in/RJBankAwayCorporate/(S(s4kbf255ut5pmz3hszum1ejc))/web/L001/retail/jsp/arcot/pages/CorporateLogin.aspx?RequestId=39875881"
+        },
+        {
+            "Sr_no": "49",
+            "name": "Baroda UP Bank",
+            "url": "https://ibanking.barodarrb.co.in/UP/"
+        },
+        {
+            "Sr_no": "50",
+            "name": "Chhattisgarh Rajya Gramin Bank",
+            "url": "https://cedgerrbmb.in/CRGB/corpLogin"
+        },
+        {
+            "Sr_no": "51",
+            "name": "Jharkhand Rajya Gramin Bank",
+            "url": "https://www.cedgenetbanking.in/JRGBOnline/corpLogin"
+        },
+        {
+            "Sr_no": "52",
+            "name": "Karnataka Gramin Bank",
+            "url": "https://netbanking.karnatakagraminbank.com/PKGB/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=49&LANGUAGE"
+        },
+        {
+            "Sr_no": "53",
+            "name": "Karnataka Vikas Grameena Bank",
+            "url": "https://netbanking.kvgbank.com/KVGB/corpLogin"
+        },
+        {
+            "Sr_no": "54",
+            "name": "Kerala Gramin Bank",
+            "url": "https://netbanking.keralagbank.com/KGB/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=115&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "55",
+            "name": "Madhya Pradesh Gramin Bank",
+            "url": "https://narmadaonline.net/NJGBBankAwayRetail/(S(spmf3355z4ez3fnixuthnhbi))/web/L001/retail/jsp/user/RetailSignOn.aspx?RequestId=62209861"
+        },
+        {
+            "Sr_no": "56",
+            "name": "Madhyanchal Gramin Bank",
+            "url": "https://cedgenetbanking.in/MBGB/corpLogin"
+        },
+        {
+            "Sr_no": "57",
+            "name": "Maharashtra Gramin Bank",
+            "url": "https://www.mgbconnect.in/MGB/corpLogin"
+        },
+        {
+            "Sr_no": "58",
+            "name": "Meghalaya Rural Bank",
+            "url": "https://www.cedgeinb.in/OnlineMGRB/corpLogin"
+        },
+        {
+            "Sr_no": "59",
+            "name": "Deutsche Bank",
+            "url": "https://login.deutschebank.co.in/corp/AuthenticationController?__START_TRAN_FLAG__=Y&FORMSGROUP_ID__=AuthenticationFG&__EVENT_ID__=LOAD&FG_BUTTONS__=LOAD&ACTION.LOAD=Y&AuthenticationFG.LOGIN_FLAG=1&BANK_ID=200&LANGUAGE_ID=001"
+        },
+        {
+            "Sr_no": "60",
+            "name": "HSBC Ltd",
+            "url": "https://apply.business.hsbc.com/pws-cd/login.htm"
+        },
+        {
+            "Sr_no": "61",
+            "name": "Standard Chartered Bank",
+            "url": "https://retail.sc.com/in/nfs/login.htm"
+        }
+    ]
+}

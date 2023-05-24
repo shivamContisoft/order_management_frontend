@@ -1,0 +1,277 @@
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <span class="page-title"><b>Employee</b></span>
+                    </div>
+                    <div class="col-sm-6">
+                        <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+                            (click)="openAddEmployeeModal(createemployee)">
+                            <i class="mdi mdi-plus me-1"></i>
+                            Add Employee
+                        </button>
+                    </div>
+                </div>
+                <div class="card-body">
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+                            <thead>
+                                <tr>
+                                    <th sortable="name">Name</th>
+                                    <th sortable="position">Contact</th>
+                                    <th sortable="office">E-mail</th>
+                                    <th sortable="age">Designation</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody *ngFor="let table of Employees; let i=index">
+                                <tr>
+                                    <td>
+                                        {{table.firstName}} {{table.lastName}}
+                                    </td>
+                                    <td>
+                                        {{table.contact}}
+                                    </td>
+                                    <td>
+                                        {{table.email}}
+                                    </td>
+                                    <td>
+                                        {{table.designation}}
+                                    </td>
+                                    <td>
+                                        <!-- View Icon -->
+                                        <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View" (click)="openViewEmployeeModal(table.id, viewemployee)">
+                                            <i class="uil uil-info-circle font-size-18"></i>
+                                        </button>
+                                        <!-- Edit Icon -->
+                                        <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit" (click)="setElementId(table.id);openEditEmployeeModal(table.id, editemployee)">
+                                            <i class="uil uil-pen font-size-18"></i>
+                                        </button>
+                                        <!-- Delete Icon -->
+                                        <button type="button" class="px-3 text-danger btn-icon"  placement="top" ngbTooltip="Delete" (click)="setElementId(table.id);openDeleteEmployeeModal(deleteemployee)">
+                                            <i class="uil uil-trash-alt font-size-18"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- End table -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Start Add Employee -->
+<ng-template #createemployee role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Add Employee  <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="employeeFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched) }" required>
+                    <div *ngIf="getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="e-mail"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No</label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact" />
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation"/>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="onSubmit(createemployee);">Save Employee</button>
+    </div> 
+</ng-template>
+<!-- End Add Employee -->
+
+<!-- Start Edit Employee -->
+<ng-template #editemployee role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Edit Employee  <span class="mandatory" style="color:red">* Fields are Mandatory</span></h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="employeeFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched) }" required>
+                    <div *ngIf="getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="e-mail"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No</label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation" />
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="updateEmployee(editemployee);">Update Employee</button>
+    </div> 
+</ng-template>
+<!-- End Edit Employee -->
+
+<!-- Start View Employee -->
+<ng-template #viewemployee role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">View Employee </h5>
+        <button type="button" class="btn-close" aria-hidden="true" (click)="resetForm();modal.dismiss('Cross click')"></button>
+    </div>
+    <div class="modal-body">
+        <form [formGroup]="employeeFormGroup">
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="firstName">First Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName" placeholder="First Name"
+                    [ngClass]="{ 'is-invalid': getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched) }" required>
+                    <div *ngIf="getEmpFormControls.firstName.errors && (getEmpFormControls.firstName.dirty || getEmpFormControls.firstName.touched)" class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.firstName.errors" class="error">
+                            First Name is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="lastName">Last Name <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.lastName.errors && (getEmpFormControls.lastName.dirty || getEmpFormControls.lastName.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.lastName.errors" class="error">
+                            Last Name is required
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="email">E-Mail <span class="mandatory" style="color: red;">*</span></label>
+                    <input type="email" class="form-control" id="email" formControlName="email" placeholder="Enter a valid e-mail"
+                        [ngClass]="{ 'is-invalid': getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched) }"
+                        required />
+                    <div *ngIf="getEmpFormControls.email.errors && (getEmpFormControls.email.dirty || getEmpFormControls.email.touched)"
+                        class="invalid-feedback">
+                        <div *ngIf="getEmpFormControls.email.errors" class="error">
+                            E-Mail is required
+                        </div>
+                    </div>
+                </div>
+                <div class="col-sm-6">
+                    <label for="contact">Contact No</label>
+                    <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact"/>
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-6">
+                    <label for="designation">Designation</label>
+                    <input type="text" class="form-control" id="designation" formControlName="designation" placeholder="Designation" />
+                </div>
+            </div>  
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="resetForm();modal.dismiss('Cross click')">Close</button>
+    </div> 
+</ng-template>
+<!-- End View Employee -->
+
+<!-- Start Delete Employee -->
+<ng-template #deleteemployee role="document" let-modal>
+    <div class="modal-header">
+        <h5 class="modal-title mt-0">Delete Employee</h5>
+        <button type="button" class="btn-close" (click)="modal.dismiss('Cross click')" aria-hidden="true"></button>
+    </div>
+    <div class="modal-body">
+        <p style="display: block;font-size: medium;color: red;">Are you sure want to delete this employee!!</p>
+    </div>
+    <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" (click)="modal.dismiss('Cross click')">Close</button>
+        <button class="btn btn-primary" (click)="deleteEmployee(deleteemployee)">Delete Employee</button>
+    </div>
+</ng-template>
+<!-- End Delete Employee -->

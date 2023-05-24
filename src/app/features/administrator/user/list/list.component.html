@@ -1,0 +1,206 @@
+<div class="container-fluid">
+
+  <!-- start page title -->
+  <app-page-title title="Users" [breadcrumbItems]="breadCrumbItems"></app-page-title>
+  <!-- end page title -->
+
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div>
+          <button type="button" class="btn btn-success mb-3 waves-effect waves-light btn-add"
+            (click)="openAddUserModal(createuser)">
+            <i class="mdi mdi-plus me-1"></i>
+            Add User
+          </button>
+        </div>
+        <div class="card-body">
+          <!-- <div class="col-md-4">
+            
+          </div> -->
+          <div class="row mb-md-2">
+            <div class="col-sm-12 col-md-6">
+              <div class="dataTables_length" id="tickets-table_length"><label
+                  class="d-inline-flex align-items-center">Show
+                  <select name="tickets-table_length" aria-controls="tickets-table" name="pageSize"
+                    [(ngModel)]="userService.pageSize" class="form-control form-control-sm mx-2">
+                    <option [ngValue]="10">10</option>
+                    <option [ngValue]="25">25</option>
+                    <option [ngValue]="50">50</option>
+                    <option [ngValue]="100">100</option>
+                  </select> entries</label></div>
+            </div>
+            <!-- Search -->
+            <div class="col-sm-12 col-md-6">
+              <div id="tickets-table_filter" class="dataTables_filter text-md-end">
+                <label class="d-inline-flex align-items-center">Search:
+                  <input type="text" name="searchTerm" class="form-control form-control-sm ms-2"
+                    aria-controls="tickets-table" [(ngModel)]="userService.searchTerm"></label>
+              </div>
+            </div>
+            <!-- End search -->
+          </div>
+          <!-- Table -->
+          <div class="table-responsive">
+            <table id="basic-datatable" class="table table-bordered dt-responsive nowrap w-100 datatables">
+              <thead>
+                <tr>
+                  <th sortable="fullName" (sort)="onSort($event)">Name</th>
+                  <th sortable="designation" (sort)="onSort($event)">Designation</th>
+                  <th sortable="email" (sort)="onSort($event)">Email</th>
+                  <th sortable="contact" (sort)="onSort($event)">Contact</th>
+                  <th sortable="createdAt" (sort)="onSort($event)">Created On</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody *ngFor="let table of Users; let i=index">
+                <tr>
+                  <td>
+                    <ngb-highlight [result]="table.fullName" [term]="userService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="table.designation" [term]="userService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="table.email" [term]="userService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="table.contact" [term]="userService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <ngb-highlight [result]="table.createdAt" [term]="userService.searchTerm"></ngb-highlight>
+                  </td>
+                  <td>
+                    <!-- View Icon -->
+                    <button type="button" class="px-3 text-warning btn-icon" placement="top" ngbTooltip="View">
+                      <i class="uil uil-info-circle font-size-18"></i>
+                    </button>
+                    <!-- Edit Icon -->
+                    <button type="button" class="px-3 text-primary btn-icon" placement="top" ngbTooltip="Edit"
+                      (click)="openEditUserModal(edituser)">
+                      <i class="uil uil-pen font-size-18"></i>
+                    </button>
+                    <!-- Delete Icon -->
+                    <button type="button" class="px-3 text-danger btn-icon" placement="top" ngbTooltip="Delete">
+                      <i class="uil uil-trash-alt font-size-18"></i>
+                    </button>
+                    <!-- <button class="btn btn-success" (click)="openAccessModal(table.id, manageAccessModal)">Manage Access</button> -->
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+          <!-- End table -->
+          <div class="row justify-content-md-between align-items-md-center mt-2">
+            <div class="col-sm-12 col-md-5">
+              <div class="dataTables_info mb-2" id="tickets-table_info" role="status" aria-live="polite">Showing
+                {{userService.startIndex}} to
+                {{userService.endIndex}} of {{userService.totalRecords}}
+                entries
+              </div>
+            </div>
+            <!-- Pagination -->
+            <div class="col-sm-12 col-md-5">
+              <div class="text-md-end float-md-end pagination-rounded">
+                <ngb-pagination [collectionSize]="Users" [(page)]="userService.page" [pageSize]="userService.pageSize">
+                </ngb-pagination>
+              </div>
+            </div>
+            <!-- End Pagination -->
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Manage Access -->
+<ng-template #manageAccessModal role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Manage Access</h5>
+    <button type="button" class="close" aria-hidden="true" (click)="modal.dismiss('Cross click')">×</button>
+  </div>
+  <div class="modal-body">
+    <ngx-treeview [items]="moduleItems" (selectedChange)="onSelectedChange($event)"
+      (filterChange)="onFilterChange($event)">
+    </ngx-treeview>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button type="button" class="btn btn-primary" (click)="successmsg();allocateAccess(manageAccessModal)">Save
+      changes</button>
+  </div>
+</ng-template>
+
+<!-- Start Add User -->
+<ng-template #createuser role="document" let-modal>
+  <div class="modal-header">
+    <h5 class="modal-title mt-0">Add User</h5>
+    <button type="button" class="btn-close" aria-hidden="true" (click)="modal.dismiss('Cross click')"></button>
+  </div>
+  <div class="modal-body">
+    <form [formGroup]="userFormGroup">
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="firstName">First Name</label>
+          <input type="text" formControlName="firstName" class="form-control rounded_" id="firstName"
+            placeholder="First Name"
+            [ngClass]="{ 'is-invalid': getChFormControls.firstName.errors && (getChFormControls.firstName.dirty || getChFormControls.firstName.touched) }"
+            required>
+          <div
+            *ngIf="getChFormControls.firstName.errors && (getChFormControls.firstName.dirty || getChFormControls.firstName.touched)"
+            class="invalid-feedback">
+            <div *ngIf="getChFormControls.firstName.errors" class="error">
+              First Name is required
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <label for="lastName">Last Name</label>
+          <input type="text" class="form-control" id="lastName" formControlName="lastName" placeholder="Last Name"
+            [ngClass]="{ 'is-invalid': getChFormControls.lastName.errors && (getChFormControls.lastName.dirty || getChFormControls.lastName.touched) }"
+            required />
+          <div
+            *ngIf="getChFormControls.lastName.errors && (getChFormControls.lastName.dirty || getChFormControls.lastName.touched)"
+            class="invalid-feedback">
+            <div *ngIf="getChFormControls.lastName.errors" class="error">
+              Last Name is required
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="email">E-Mail</label>
+          <input type="email" class="form-control" id="email" formControlName="email" placeholder="Enter a valid e-mail"
+            [ngClass]="{ 'is-invalid': getChFormControls.email.errors && (getChFormControls.email.dirty || getChFormControls.email.touched) }"
+            required />
+          <div
+            *ngIf="getChFormControls.email.errors && (getChFormControls.email.dirty || getChFormControls.email.touched)"
+            class="invalid-feedback">
+            <div *ngIf="getChFormControls.email.errors" class="error">
+              E-Mail is required
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-6">
+          <label for="contact">Contact No</label>
+          <input type="text" class="form-control" id="contact" formControlName="contact" placeholder="contact" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-sm-6">
+          <label for="designation">Designation</label>
+          <input type="text" class="form-control" id="designation" formControlName="designation"
+            placeholder="Designation" />
+        </div>
+      </div>
+    </form>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+    <button class="btn btn-primary" (click)="onSubmit();" [disabled]="!userFormGroup.valid">Save User</button>
+  </div>
+
+</ng-template>
+<!-- End Add User -->
